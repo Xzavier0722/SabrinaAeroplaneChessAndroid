@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginPage">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/txView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AEROPLANE CHESS"
+            android:gravity="center_horizontal"
+            android:textSize="45sp"
+            android:layout_margin="60dp"
+            />
+        <EditText
+            android:id="@+id/et_Account"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="16sp"
+            android:hint="Account"
+            android:textColor="#FFAD33"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/txView1"
+            ></EditText>
+        <EditText
+            android:id="@+id/et_Password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="16sp"
+            android:hint="Password"
+            android:textColor="#FFAD33"
+            android:layout_below="@+id/et_Account"
+            android:layout_margin="10dp"
+            android:inputType="textPassword"
+            ></EditText>
+
+        <Button
+            android:id="@+id/btn_Login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_Password"
+            android:layout_margin="10dp"
+            android:text="Login"
+            ></Button>
+
+        <Button
+            android:id="@+id/btn_Register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_Login"
+            android:layout_margin="10dp"
+            android:text="Register"
+            ></Button>
+
+    </RelativeLayout>
+
+
+
+</ScrollView>

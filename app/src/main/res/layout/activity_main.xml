@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top">
+
+        <Button
+            android:id="@+id/btnTStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StartPage"
+            android:layout_marginBottom="10dp"
+            ></Button>
+        <Button
+            android:id="@+id/btnTLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnTStart"
+            android:text="LoginPage"
+            android:layout_marginBottom="10dp"
+            ></Button>
+        <Button
+            android:id="@+id/btnTGameProcessPage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GameProcess"
+            android:layout_below="@+id/btnTLogin"
+            android:layout_marginBottom="10dp">
+        </Button>
+        <Button
+            android:id="@+id/btnTMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Menu"
+            android:layout_below="@+id/btnTGameProcessPage">
+        </Button>
+
+
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>
