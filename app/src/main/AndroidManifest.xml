@@ -8,20 +8,32 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar"
-        >
-
-        <activity android:name=".LoadingPage"></activity>
-        <activity android:name=".MutilplayerPage" />
-        <activity android:name=".StartPage"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".MenuPage"
+        android:theme="@style/Theme.AppCompat.NoActionBar">
+        <activity android:name=".PersonalPage"></activity>
+        <activity
+            android:name=".CreateRoomPage"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".RoomHallPage"
+            android:screenOrientation="landscape"></activity>
+        <activity android:name=".LoadingPage" />
+        <activity
+            android:name=".MutilplayerPage"
             android:screenOrientation="landscape" />
-        <activity android:name=".LoginPage"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".GameProcessPage"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".StartPage"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MenuPage"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".LoginPage"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".GameProcessPage"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

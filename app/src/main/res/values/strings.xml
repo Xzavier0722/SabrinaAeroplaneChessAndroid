@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">aeroplane_chess</string>
+    <string name="app_name">IconFont</string>
+
+    <string name="back">&#xe602;</string>
+    <string name="personal">&#xe601;</string>
+    <string name="aeroplane">Start! &#xe6f2;</string>
 </resources>

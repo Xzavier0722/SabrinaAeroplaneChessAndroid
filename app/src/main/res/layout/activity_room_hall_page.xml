@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RoomHallPage">
+    <com.upowarz.aeroplane_chess.IconButton
+        android:id="@+id/btnBackMenu"
+        android:layout_width="57dp"
+        android:layout_height="57dp"
+        android:scaleType="fitXY"
+        android:text="@string/back"
+        android:background="@null"
+        android:layout_alignParentLeft="true"
+        />
+    <EditText
+        android:id="@+id/et_RoomNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnBackMenu"
+        android:layout_margin="5dp"></EditText>
+    <Button
+        android:id="@+id/btn_SearchRoom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:layout_below="@+id/et_RoomNum"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_normal_button"></Button>
+    <Button
+        android:id="@+id/btn_CreateRoom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:layout_below="@+id/btn_SearchRoom"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_normal_button"></Button>
+
+    <ListView
+        android:id="@+id/list_Room"
+        android:layout_below="@+id/btn_CreateRoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></ListView>
+
+  </RelativeLayout>

@@ -8,6 +8,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <com.upowarz.aeroplane_chess.IconButton
+            android:id="@+id/btnLoginBack"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:background="@null"
+            android:text="@string/back"></com.upowarz.aeroplane_chess.IconButton>
         <TextView
             android:id="@+id/txView1"
             android:layout_width="match_parent"
@@ -16,6 +23,7 @@
             android:gravity="center_horizontal"
             android:textSize="45sp"
             android:layout_margin="60dp"
+            android:layout_below="@+id/btnLoginBack"
             />
         <EditText
             android:id="@+id/et_Account"
@@ -46,6 +54,8 @@
             android:layout_below="@+id/et_Password"
             android:layout_margin="10dp"
             android:text="Login"
+            android:shadowRadius="10"
+            android:background="@drawable/selector_normal_button"
             ></Button>
 
         <Button
@@ -55,6 +65,7 @@
             android:layout_below="@+id/btn_Login"
             android:layout_margin="10dp"
             android:text="Register"
+            android:background="@drawable/selector_normal_button"
             ></Button>
 
     </RelativeLayout>

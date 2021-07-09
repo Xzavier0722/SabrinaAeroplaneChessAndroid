@@ -15,7 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.183"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/selector_normal_button"/>
 
     <Button
         android:id="@+id/btnmultiply"
@@ -26,15 +27,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.819"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/selector_normal_button"/>
 
-    <ImageButton
+    <com.upowarz.aeroplane_chess.IconButton
         android:id="@+id/btnBackMenu"
         android:layout_width="57dp"
         android:layout_height="57dp"
         android:scaleType="fitXY"
+        android:text="@string/back"
+        android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back" />
+         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
