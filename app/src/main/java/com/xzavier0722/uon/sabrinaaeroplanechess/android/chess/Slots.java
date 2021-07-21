@@ -185,7 +185,7 @@ public class Slots {
         return prepareSlots.get(flag);
     }
 
-    public List<Slot> getSlots() {
+    public List<Slot> getPublicSlots() {
         return new ArrayList<>(slots);
     }
 
