@@ -1,8 +1,8 @@
-package com.xzavier0722.uon.sabrinaaeroplanechess.android.core;
+package com.xzavier0722.uon.sabrinaaeroplanechess.android.event;
 
 import androidx.annotation.NonNull;
 
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.objects.ChessBoard;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.chess.ChessBoard;
 
 public abstract class Event {
 

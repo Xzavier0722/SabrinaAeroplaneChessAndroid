@@ -1,4 +1,4 @@
-package com.xzavier0722.uon.sabrinaaeroplanechess.android.core;
+package com.xzavier0722.uon.sabrinaaeroplanechess.android.chess;
 
 public enum PieceFace {
 

@@ -1,4 +1,4 @@
-package com.xzavier0722.uon.sabrinaaeroplanechess.android.objects;
+package com.xzavier0722.uon.sabrinaaeroplanechess.android.chess;
 
 public class Location {
 
