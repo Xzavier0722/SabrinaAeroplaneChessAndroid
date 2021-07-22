@@ -28,6 +28,8 @@ public class Slots {
         firstSlotIndex.put(PlayerFlag.GREEN, 26);
         firstSlotIndex.put(PlayerFlag.RED, 39);
         //init public slots
+        nextFlag = PlayerFlag.RED;
+        nextFace = PieceFace.LEFT;
         slots.add(createPublicSlot(31,23));
         slots.add(createPublicSlot(29,24));
         slots.add(createPublicSlot(27,24));
