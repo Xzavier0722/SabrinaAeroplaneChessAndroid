@@ -15,6 +15,7 @@ public class Slot implements Flagged {
     private final Location loc;
     private boolean last;
     private boolean onTrack;
+    private int ordinal;
 
     public Slot(PlayerFlag flag, Location loc, SlotType type, PieceFace face) {
         this.flag = flag;
@@ -24,6 +25,15 @@ public class Slot implements Flagged {
         this.face = face;
         last = false;
         onTrack = false;
+        ordinal = -1;
+    }
+
+    public void setOrdinal(int ordinal) {
+        this.ordinal = ordinal;
+    }
+
+    public int ordinal() {
+        return ordinal;
     }
 
     /**

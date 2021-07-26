@@ -1,5 +1,8 @@
 package com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.PlayerFlag;
 
 import java.util.ArrayList;
@@ -175,6 +178,18 @@ public class Slots {
         slots.get(17).setOnTrack(true);
         slots.get(30).setOnTrack(true);
         slots.get(43).setOnTrack(true);
+
+        // Set ordinal
+        for (int i = 0; i < slots.size(); i++) {
+            Slot each = slots.get(i);
+            each.setOrdinal(i);
+        }
+        for (List<Slot> eachPrivateSlots : privateSlots.values()) {
+            for (int i = 0; i < eachPrivateSlots.size(); i++) {
+                Slot each = slots.get(i);
+                each.setOrdinal(i);
+            }
+        }
     }
 
     private Slot createPublicSlot(int x, int y){
@@ -183,24 +198,69 @@ public class Slots {
         return re;
     }
 
-    public Slot getStartSlot(PlayerFlag flag) {
+    @NonNull
+    public Slot getPrepareSlot(PlayerFlag flag) {
         return prepareSlots.get(flag);
     }
 
+    @NonNull
     public List<Slot> getPublicSlots() {
         return new ArrayList<>(slots);
     }
 
+    @NonNull
     public List<Slot> getPrivateSlots(PlayerFlag flag) {
         return new ArrayList<>(privateSlots.get(flag));
     }
 
+    @NonNull
     public List<Slot> getHomeSlots(PlayerFlag flag) {
         return new ArrayList<>(homeSlots.get(flag));
     }
 
-    public int getStartIndex(PlayerFlag flag) {
-        return firstSlotIndex.get(flag);
+    public Slot getStartSlot(PlayerFlag flag) {
+        return slots.get(firstSlotIndex.get(flag));
+    }
+
+    /**
+     * Get the slot after specific step for specific flag
+     * @param currentSlot: the current slot
+     * @param num: specific number of step after
+     * @return the {@link Slot} after num step
+     */
+    @NonNull
+    public Slot getPublicSlotAfter(Slot currentSlot, int num) {
+        if(currentSlot.getType() != SlotType.PUBLIC_SLOT) {
+            throw new IllegalArgumentException("The current slot must be a public slot");
+        }
+
+        int targetSlotIndex = currentSlot.ordinal() + num;
+        if (targetSlotIndex >= slots.size()) {
+            targetSlotIndex = slots.size() - targetSlotIndex;
+        }
+        return slots.get(targetSlotIndex);
+    }
+
+    /**
+     * Get next slot for specific flag
+     * @param flag: the flag of piece
+     * @param currentSlot: the current slot
+     * @return the slot next to the current slot, or null if is the last
+     */
+    @Nullable
+    public Slot getNext(PlayerFlag flag, Slot currentSlot){
+        switch (currentSlot.getType()) {
+            case HOME_SLOT:
+                return prepareSlots.get(flag);
+            case START_SLOT:
+                return getStartSlot(flag);
+            case PRIVATE_SLOT:
+                return privateSlots.get(flag).get(currentSlot.ordinal()+1);
+            case PUBLIC_SLOT:
+                return (currentSlot.getFlag() == flag && currentSlot.isLast()) ? privateSlots.get(flag).get(0) : getPublicSlotAfter(currentSlot, 1);
+            default:
+                return null;
+        }
     }
 
 }
