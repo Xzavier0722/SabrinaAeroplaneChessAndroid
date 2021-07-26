@@ -11,13 +11,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         >
-        <com.upowarz.aeroplane_chess.IconButton
+        <com.upowarz.aeroplanechess.IconButton
             android:id="@+id/btnCreateBack"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentLeft="true"
             android:background="@null"
-            android:text="@string/back"></com.upowarz.aeroplane_chess.IconButton>
+            android:text="@string/back"></com.upowarz.aeroplanechess.IconButton>
         <TextView
             android:id="@+id/txView1"
             android:layout_width="match_parent"
@@ -38,24 +38,30 @@
             android:text="Room Type"
             android:layout_below="@+id/spRoomMember"
             android:textSize="25sp"></TextView>
-        <RadioButton
-            android:id="@+id/rBtnPublic"
+        <RadioGroup
+            android:id="@+id/rBtnG"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txView2"
-            android:text="public"
-            android:textSize="25sp"></RadioButton>
-        <RadioButton
-            android:id="@+id/rBtnPrivate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rBtnPublic"
-            android:text="private"
-            android:textSize="25sp"></RadioButton>
+            android:layout_margin="10dp">
+            <RadioButton
+                android:id="@+id/rBtnPublic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="public"
+                android:checked="true"
+                android:textSize="25sp"></RadioButton>
+            <RadioButton
+                android:id="@+id/rBtnPrivate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="private"
+                android:textSize="25sp"></RadioButton>
+        </RadioGroup>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rBtnPrivate"
+            android:layout_below="@id/rBtnG"
             android:text="Create"
             android:textSize="20sp"
             android:background="@drawable/selector_normal_button"></Button>

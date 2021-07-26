@@ -1,26 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".GameProcessPage"
+    android:orientation="horizontal"
+    android:id="@+id/mainLLayout"
     >
-    <ImageButton
-        android:id="@+id/btnBackMenu"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:scaleType="fitXY"
-        app:srcCompat="@drawable/back" />
-    <RelativeLayout
-        android:id="@+id/ReLayout"
+
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_weight="50"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        >
+        <TextView
+            android:id="@+id/tvInfBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            ></TextView>
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></TextView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+            <com.upowarz.aeroplanechess.IconButton
+                android:layout_margin="30dp"
+                android:id="@+id/btnRoll"
+                android:text="@string/dice"
+                android:textSize="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_normal_button">
+            </com.upowarz.aeroplanechess.IconButton>
 
-    </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 
 
 
-</RelativeLayout>
+</LinearLayout>

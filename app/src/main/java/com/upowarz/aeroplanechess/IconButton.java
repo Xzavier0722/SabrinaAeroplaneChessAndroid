@@ -1,4 +1,4 @@
-package com.upowarz.aeroplane_chess;
+package com.upowarz.aeroplanechess;
 
 import android.content.Context;
 import android.graphics.Typeface;

@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/selector_normal_button"/>
 
-    <com.upowarz.aeroplane_chess.IconButton
+    <com.upowarz.aeroplanechess.IconButton
         android:id="@+id/btnBackMenu"
         android:layout_width="57dp"
         android:layout_height="57dp"

@@ -1,4 +1,4 @@
-package com.upowarz.aeroplane_chess;
+package com.upowarz.aeroplanechess;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
