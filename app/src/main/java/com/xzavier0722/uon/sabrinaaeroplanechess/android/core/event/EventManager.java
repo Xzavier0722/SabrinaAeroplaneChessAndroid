@@ -3,12 +3,15 @@ package com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class EventManager {
 
     private final Map<ListenerType, Map<Class<? extends Event>, Set<ListenerExecutor>>> listeners = new HashMap<>();
+    private final List<Event> cacheList = new LinkedList<>();
 
     public void registerListener(Listener listener) {
         for (Method each : listener.getClass().getMethods()) {
@@ -43,7 +46,19 @@ public class EventManager {
         }
     }
 
-    public void callListener(Event event, ListenerType type){
+    public void callListener(Event event) {
+        cacheList.add(event);
+        callListener(event, ListenerType.Listener);
+    }
+
+    public void updateMonitor() {
+        for (Event each : cacheList) {
+            callListener(each, ListenerType.Monitor);
+        }
+        cacheList.clear();
+    }
+
+    private void callListener(Event event, ListenerType type){
         Map<Class<? extends Event>, Set<ListenerExecutor>> typedListeners = listeners.get(type);
         if (typedListeners == null) return;
 
