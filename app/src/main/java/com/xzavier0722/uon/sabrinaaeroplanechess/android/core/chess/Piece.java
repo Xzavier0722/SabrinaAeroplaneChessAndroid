@@ -6,13 +6,14 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.PlayerFlag;
 public class Piece implements Flagged {
 
     private final PlayerFlag flag;
+    private final int id;
     private boolean won;
     private boolean enabled;
-    private int id;
     private Slot currentSlot;
 
-    public Piece(PlayerFlag flag) {
+    public Piece(PlayerFlag flag, int id) {
         this.flag = flag;
+        this.id = id;
         won = false;
         enabled = false;
     }
@@ -76,14 +77,6 @@ public class Piece implements Flagged {
      */
     public boolean isEnabled(){
         return enabled;
-    }
-
-    /**
-     * Set piece id in the chessboard. Usually is the load order.
-     * @param id: int id.
-     */
-    public void setId(int id){
-        this.id = id;
     }
 
     /**
