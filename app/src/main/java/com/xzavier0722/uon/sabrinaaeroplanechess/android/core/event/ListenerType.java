@@ -1,7 +1,8 @@
 package com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event;
 
-public interface EventExecutor {
+public enum ListenerType {
 
-    void handle(Event event);
+    Listener,
+    Monitor
 
 }
