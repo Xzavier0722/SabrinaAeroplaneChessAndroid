@@ -1,4 +1,4 @@
-package com.xzavier0722.uon.sabrinaaeroplanechess.android.events;
+package com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece;
 
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.ChessBoard;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Piece;

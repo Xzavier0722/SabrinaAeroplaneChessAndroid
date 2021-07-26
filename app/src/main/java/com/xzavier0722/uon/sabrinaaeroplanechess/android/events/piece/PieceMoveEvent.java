@@ -1,4 +1,4 @@
-package com.xzavier0722.uon.sabrinaaeroplanechess.android.events;
+package com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece;
 
 import androidx.annotation.NonNull;
 
