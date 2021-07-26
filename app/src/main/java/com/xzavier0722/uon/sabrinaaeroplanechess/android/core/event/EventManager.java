@@ -32,22 +32,8 @@ public class EventManager {
             Class<? extends Event> eventClass = clazz.asSubclass(Event.class);
             each.setAccessible(true);
 
-            // Get map for specific type
-            Map<Class<? extends Event>, Set<ListenerExecutor>> typedListeners = listeners.get(annotation.type());
-            if (typedListeners == null) {
-                typedListeners = new HashMap<>();
-                listeners.put(annotation.type(), typedListeners);
-            }
-
-            // Get executor set
-            Set<ListenerExecutor> executors = typedListeners.get(eventClass);
-            if (executors == null) {
-                executors = new HashSet<>();
-                typedListeners.put(eventClass, executors);
-            }
-
             // Add executor
-            executors.add(event -> {
+            listeners.computeIfAbsent(annotation.type(), k -> new HashMap<>()).computeIfAbsent(eventClass, k -> new HashSet<>()).add(event -> {
                 try {
                     each.invoke(listener, event);
                 } catch (Exception e) {
