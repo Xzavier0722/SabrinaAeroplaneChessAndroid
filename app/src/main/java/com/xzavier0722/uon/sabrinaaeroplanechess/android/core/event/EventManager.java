@@ -1,6 +1,5 @@
-package com.xzavier0722.uon.sabrinaaeroplanechess.android.event;
+package com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;

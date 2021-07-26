@@ -1,7 +1,7 @@
 package com.xzavier0722.uon.sabrinaaeroplanechess.android;
 
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.chess.Slots;
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.event.EventManager;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Slots;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.EventManager;
 
 public class Sabrina {
 

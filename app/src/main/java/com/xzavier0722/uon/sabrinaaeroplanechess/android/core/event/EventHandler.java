@@ -1,4 +1,4 @@
-package com.xzavier0722.uon.sabrinaaeroplanechess.android.event;
+package com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

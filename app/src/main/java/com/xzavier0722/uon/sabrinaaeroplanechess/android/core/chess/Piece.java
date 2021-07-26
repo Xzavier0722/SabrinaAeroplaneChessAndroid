@@ -1,4 +1,4 @@
-package com.xzavier0722.uon.sabrinaaeroplanechess.android.chess;
+package com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess;
 
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Flagged;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.PlayerFlag;
