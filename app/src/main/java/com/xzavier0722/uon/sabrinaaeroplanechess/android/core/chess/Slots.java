@@ -186,7 +186,7 @@ public class Slots {
         }
         for (List<Slot> eachPrivateSlots : privateSlots.values()) {
             for (int i = 0; i < eachPrivateSlots.size(); i++) {
-                Slot each = slots.get(i);
+                Slot each = eachPrivateSlots.get(i);
                 each.setOrdinal(i);
             }
         }
