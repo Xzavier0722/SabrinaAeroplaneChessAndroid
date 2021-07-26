@@ -230,8 +230,11 @@ public class Slots {
      */
     @NonNull
     public Slot getPublicSlotAfter(Slot currentSlot, int num) {
-        if(currentSlot.getType() != SlotType.PUBLIC_SLOT) {
+        if (currentSlot.getType() != SlotType.PUBLIC_SLOT) {
             throw new IllegalArgumentException("The current slot must be a public slot");
+        }
+        if (num < 1 || num >= slots.size()) {
+            throw new IllegalArgumentException("The step number must between 1 - "+slots.size());
         }
 
         int targetSlotIndex = currentSlot.ordinal() + num;
@@ -248,7 +251,7 @@ public class Slots {
      * @return the slot next to the current slot, or null if is the last
      */
     @Nullable
-    public Slot getNext(PlayerFlag flag, Slot currentSlot){
+    public Slot getNext(PlayerFlag flag, Slot currentSlot) {
         switch (currentSlot.getType()) {
             case HOME_SLOT:
                 return prepareSlots.get(flag);
