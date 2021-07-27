@@ -8,7 +8,6 @@ public class Piece implements Flagged {
     private final PlayerFlag flag;
     private final int id;
     private boolean won;
-    private boolean enabled;
     private Slot currentSlot;
     private Slot homeSlot;
 
@@ -16,7 +15,6 @@ public class Piece implements Flagged {
         this.flag = flag;
         this.id = id;
         won = false;
-        enabled = false;
     }
 
 
@@ -47,9 +45,8 @@ public class Piece implements Flagged {
     /**
      * Call when this piece reached the destination.
      */
-    public void onWin(){
+    public void setWon(){
         won = true;
-        enabled = false;
     }
 
     /**
@@ -58,35 +55,6 @@ public class Piece implements Flagged {
      */
     public boolean isWon(){
         return won;
-    }
-
-    /**
-     * Reset win status.
-     */
-    public void reset(){
-        won = false;
-        currentSlot = null;
-    }
-
-    /**
-     * Set piece enable status. This design is for UI to update the piece status.
-     * When set to true, this will check if hit the requirement with the dice number and slot type.
-     * If not, will skip setting.
-     * @param enabled: boolean that enable or not.
-     * @param diceNum: the dice num rolled. If set to false, this will be ignored.
-     */
-    public void setEnabled(boolean enabled, int diceNum){
-        if(!enabled || currentSlot.getType()!=SlotType.HOME_SLOT || diceNum >= 5){
-            this.enabled = enabled;
-        }
-    }
-
-    /**
-     * Get the enabled status. This design is for UI to update the piece status.
-     * @return true if enabled, false if not.
-     */
-    public boolean isEnabled(){
-        return enabled;
     }
 
     /**

@@ -4,14 +4,14 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Player;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.ChessBoard;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Piece;
 
-import java.util.Set;
+import java.util.List;
 
 public class PlayerSelectPieceEvent extends PlayerDiceEvent {
 
     private Piece selectedPiece;
-    private final Set<Piece> availablePieces;
+    private final List<Piece> availablePieces;
 
-    public PlayerSelectPieceEvent(ChessBoard chessBoard, Player player, int diceNum, Set<Piece> availablePieces) {
+    public PlayerSelectPieceEvent(ChessBoard chessBoard, Player player, int diceNum, List<Piece> availablePieces) {
         super(chessBoard, player, diceNum);
         this.availablePieces = availablePieces;
     }
@@ -27,7 +27,7 @@ public class PlayerSelectPieceEvent extends PlayerDiceEvent {
         return selectedPiece;
     }
 
-    public Set<Piece> getAvailablePieces() {
+    public List<Piece> getAvailablePieces() {
         return availablePieces;
     }
 }
