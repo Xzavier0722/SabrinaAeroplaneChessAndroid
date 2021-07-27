@@ -205,17 +205,17 @@ public class Slots {
 
     @NonNull
     public List<Slot> getPublicSlots() {
-        return new ArrayList<>(slots);
+        return slots;
     }
 
     @NonNull
     public List<Slot> getPrivateSlots(PlayerFlag flag) {
-        return new ArrayList<>(privateSlots.get(flag));
+        return privateSlots.get(flag);
     }
 
     @NonNull
     public List<Slot> getHomeSlots(PlayerFlag flag) {
-        return new ArrayList<>(homeSlots.get(flag));
+        return homeSlots.get(flag);
     }
 
     public Slot getStartSlot(PlayerFlag flag) {

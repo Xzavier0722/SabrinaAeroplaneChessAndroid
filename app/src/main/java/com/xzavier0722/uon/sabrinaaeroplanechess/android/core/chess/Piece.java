@@ -10,12 +10,22 @@ public class Piece implements Flagged {
     private boolean won;
     private boolean enabled;
     private Slot currentSlot;
+    private Slot homeSlot;
 
     public Piece(PlayerFlag flag, int id) {
         this.flag = flag;
         this.id = id;
         won = false;
         enabled = false;
+    }
+
+
+    public Slot getHomeSlot() {
+        return homeSlot;
+    }
+
+    public void setHomeSlot(Slot homeSlot) {
+        this.homeSlot = homeSlot;
     }
 
     /**

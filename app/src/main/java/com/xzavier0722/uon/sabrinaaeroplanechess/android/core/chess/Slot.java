@@ -49,7 +49,7 @@ public class Slot implements Flagged {
      * @return the piece {@link PlayerFlag} that current occupied.
      */
     public PlayerFlag getOccupiedFlag() {
-        return isOccupied()?pieces.get(0).getFlag():null;
+        return isOccupied()?pieces.get(0).getFlag():PlayerFlag.NONE;
     }
 
     /**

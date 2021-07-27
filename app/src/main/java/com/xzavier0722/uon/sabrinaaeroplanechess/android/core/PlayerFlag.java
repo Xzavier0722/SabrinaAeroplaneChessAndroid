@@ -5,6 +5,7 @@ public enum PlayerFlag {
     BLUE,
     GREEN,
     RED,
-    YELLOW
+    YELLOW,
+    NONE
 
 }

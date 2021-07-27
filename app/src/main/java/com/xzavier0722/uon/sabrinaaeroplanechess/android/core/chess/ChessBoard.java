@@ -1,24 +1,24 @@
 package com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.Sabrina;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Player;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.PlayerFlag;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class ChessBoard {
 
     private final Map<PlayerFlag, Player> players = new HashMap<>();
-    private final Map<PlayerFlag, List<Piece>> pieces = new HashMap<>();
+    private final Map<PlayerFlag, Set<Piece>> pieces = new HashMap<>();
+    private final Slots slots = new Slots();
 
     public ChessBoard(Set<Player> players) {
 
@@ -38,11 +38,13 @@ public class ChessBoard {
 
         // Add pieces
         forEachFlag(flag -> {
-            List<Piece> newPieces = new ArrayList<>();
+            Set<Piece> newPieces = new HashSet<>();
             int baseId = flag.ordinal()*4;
             for (int i = 0; i < 4; i++) {
                 Piece piece = new Piece(flag, baseId++);
-                piece.setCurrentSlot(Sabrina.getSlots().getHomeSlots(flag).get(i));
+                Slot home = slots.getHomeSlots(flag).get(i);
+                piece.setHomeSlot(home);
+                setPieceToSlot(piece, home);
                 newPieces.add(piece);
             }
             pieces.put(flag, newPieces);
@@ -66,11 +68,25 @@ public class ChessBoard {
 
     /**
      * Check if the specific flag won the game
-     * @param flag
-     * @return
+     * @param flag: the specific {@link PlayerFlag}.
+     * @return true if all pieces of the specific flag won, else false
      */
     public boolean isWon(PlayerFlag flag) {
         return getProcessingPieces(flag).isEmpty();
+    }
+
+    /**
+     * Get playing player count (number of players who is not won yet)
+     *
+     */
+    public int getPlayingCount() {
+        AtomicInteger re = new AtomicInteger();
+        forEachFlag(flag -> {
+            if (!isWon(flag)) {
+                re.getAndIncrement();
+            }
+        });
+        return re.get();
     }
 
     /**
@@ -87,6 +103,30 @@ public class ChessBoard {
             }
         }
         return re;
+    }
+
+    /**
+     * Get all pieces for specific flag.
+     * @param flag: the specific {@link PlayerFlag}.
+     * @return the set of all {@link Piece} that own by this flag.
+     */
+    @Nullable
+    public Set<Piece> getPieces(PlayerFlag flag) {
+        return pieces.get(flag);
+    }
+
+    public void setPieceToSlot(Piece p, Slot target) {
+        Slot previous = p.getCurrentSlot();
+        if (previous != null) {
+            previous.removePiece(p);
+        }
+        target.addPiece(p);
+        p.setCurrentSlot(target);
+    }
+
+    @NonNull
+    public Slots getSlots() {
+        return slots;
     }
 
 }
