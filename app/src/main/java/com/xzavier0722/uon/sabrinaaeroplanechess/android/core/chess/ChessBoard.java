@@ -129,4 +129,8 @@ public class ChessBoard {
         return slots;
     }
 
+    public Player getPlayer(PlayerFlag flag) {
+        return players.get(flag);
+    }
+
 }

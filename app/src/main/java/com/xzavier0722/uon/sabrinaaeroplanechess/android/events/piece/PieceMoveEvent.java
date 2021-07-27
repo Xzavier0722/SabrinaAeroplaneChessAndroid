@@ -39,4 +39,8 @@ public class PieceMoveEvent extends PieceEvent {
     public int getBonusStep() {
         return bonusStep;
     }
+
+    public int getTotalStep() {
+        return rawStep+bonusStep;
+    }
 }

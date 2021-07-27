@@ -1,5 +1,7 @@
 package com.xzavier0722.uon.sabrinaaeroplanechess.android.events.player;
 
+import androidx.annotation.NonNull;
+
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Flagged;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Player;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.PlayerFlag;
@@ -18,5 +20,9 @@ public abstract class PlayerEvent extends Event implements Flagged {
     @Override
     public PlayerFlag getFlag() {
         return player.getFlag();
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }
