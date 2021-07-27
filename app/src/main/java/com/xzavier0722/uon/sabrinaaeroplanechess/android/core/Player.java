@@ -4,17 +4,18 @@ public class Player implements Flagged {
 
     private final PlayerFlag flag;
     private final String name;
-
-    private boolean isRobot;
+    private final PlayerType type;
+    private boolean robot;
 
     public Player(PlayerFlag flag, String name) {
-        this(flag, name, false);
+        this(flag, name, PlayerType.LOCAL);
     }
 
-    public Player(PlayerFlag flag, String name, boolean isRobot) {
+    public Player(PlayerFlag flag, String name, PlayerType type) {
         this.flag = flag;
         this.name = name;
-        this.isRobot = isRobot;
+        this.type = type;
+        this.robot = type == PlayerType.ROBOT;
     }
 
     @Override
@@ -27,10 +28,14 @@ public class Player implements Flagged {
     }
 
     public void setRobot(boolean robot) {
-        isRobot = robot;
+        this.robot = robot;
     }
 
     public boolean isRobot() {
-        return isRobot;
+        return robot;
+    }
+
+    public PlayerType getType() {
+        return type;
     }
 }

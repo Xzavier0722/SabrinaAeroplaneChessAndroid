@@ -11,7 +11,6 @@ import java.util.Set;
 public class EventManager {
 
     private final Map<ListenerType, Map<Class<? extends Event>, Set<ListenerExecutor>>> listeners = new HashMap<>();
-    private final List<Event> cacheList = new LinkedList<>();
 
     public void registerListener(Listener listener) {
         for (Method each : listener.getClass().getMethods()) {
@@ -47,15 +46,8 @@ public class EventManager {
     }
 
     public void callListener(Event event) {
-        cacheList.add(event);
         callListener(event, ListenerType.Listener);
-    }
-
-    public void updateMonitor() {
-        for (Event each : cacheList) {
-            callListener(each, ListenerType.Monitor);
-        }
-        cacheList.clear();
+        callListener(event, ListenerType.Monitor);
     }
 
     private void callListener(Event event, ListenerType type){
