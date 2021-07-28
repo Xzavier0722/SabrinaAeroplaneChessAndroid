@@ -39,7 +39,6 @@ public class GameProcessPage extends AppCompatActivity{
     private AbsoluteLayout mABLayout;
     private LinearLayout.LayoutParams mLParams;
     private LinearLayout linearLayout;
-    private AbsoluteLayout.LayoutParams layoutParams;
     public Button mbtnRoll;
     private TextView mtvInfoBar;
     private TextView mtvPlayerList;
@@ -64,17 +63,24 @@ public class GameProcessPage extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         slots = new Slots();
         setContentView(R.layout.activity_game_process_page);
+
+        //hide status Bar
         View mView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         mView.setSystemUiVisibility(uiOptions);
+
+        //init
         init();
+
         //Set Ablayout and add into view
         mLParams=new LinearLayout.LayoutParams(height,height);
-        mABLayout.setLayoutParams(mLParams);
         mABLayout.setBackground(getResources().getDrawable(R.drawable.game_map));
         linearLayout.addView(mABLayout,0,mLParams);
-        layoutParams=new AbsoluteLayout.LayoutParams(chessSize,chessSize,getAxis(3),getAxis(31));
+
+        //Call listener
         GameStartEvent gameStartEvent=CacheManager.get("eventInit",GameStartEvent.class,null);
+
+        //Call Thread
         final ExecutorService mThreadPool = Executors.newCachedThreadPool();
         mThreadPool.execute(()->{
             while (true) {
@@ -96,54 +102,39 @@ public class GameProcessPage extends AppCompatActivity{
                 }
             });
         });
-        mbtnRoll.setOnClickListener(v -> {
-            soundPlayer.start();
-            result=true;
-            //mtvInfoBar.setText(playerList.get());
-        });
+
+
     }
 
 
 
 
     private void init() {
-        mtvInfoBar = findViewById(R.id.tvInfBar);
-        mtvPlayerList = findViewById(R.id.tvPlayerList);
-        chessButtons = new HashMap<>();
-        mtvInfoBar = findViewById(R.id.tvInfBar);
-        mtvPlayerList = findViewById(R.id.tvPlayerList);
-        playerList = new ArrayList<>();
-        soundPlayer = MediaPlayer.create(this,R.raw.go);
+
+        mABLayout = new AbsoluteLayout(this);
         linearLayout = findViewById(R.id.mainLLayout);
         mbtnRoll = findViewById(R.id.btnRoll);
+        mtvInfoBar = findViewById(R.id.tvInfBar);
+        mtvPlayerList = findViewById(R.id.tvPlayerList);
+
+        chessButtons = new HashMap<>();
+        playerList = new ArrayList<>();
+        soundPlayer = MediaPlayer.create(this,R.raw.go);
+
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        mABLayout = new AbsoluteLayout(this);
+
         height = metrics.heightPixels;
         mapGap = height/36;
         chessSize = getAxis(2);
+
+        //Create Click event
+        mbtnRoll.setOnClickListener(v -> {
+            soundPlayer.start();
+            result=true;
+        });
     }
 
-    private void ruleMoving(ChessButton btn){
-        PlayerFlag flag = PlayerFlag.YELLOW;
-        Slot next = slots.getHomeSlots(flag).get(0);
-        while (next != null) {
-            Slot finalNext = next;
-            animationQueue.offer(new AnimationTask(500) {
-                @Override
-                public void execute() {
-                    runOnUiThread(()->{
-                        int moveX = finalNext.getLocation().getX();
-                        int moveY = finalNext.getLocation().getY();
-                        btn.setDirection(finalNext.getFace());
-                        btn.animate().x(moveX*mapGap).setDuration(200);
-                        btn.animate().y(moveY*mapGap).setDuration(200);
-                    });
-                }
-            });
-            next = slots.getNext(flag, next);
-        }
-    }
 
     private int getAxis(int multiplier) {
         return (int)(mapGap*multiplier);
@@ -165,13 +156,16 @@ public class GameProcessPage extends AppCompatActivity{
         });
     }
 
+
     public void setMtvInfoBar(String text){
         mtvInfoBar.setText(text);
     }
 
+
     public void setMtvPlayerList(String text){
         mtvPlayerList.setText(text);
     }
+
 
     private void initChessBoard(ChessBoard chessBoard){
         StringBuilder sb = new StringBuilder();
@@ -200,6 +194,7 @@ public class GameProcessPage extends AppCompatActivity{
             return piece.getCurrentSlot().getLocation();
         }
     }
+
 
     public Map<Integer, ChessButton> getChessButtons(PlayerFlag flag){
         return chessButtons.get(flag);
