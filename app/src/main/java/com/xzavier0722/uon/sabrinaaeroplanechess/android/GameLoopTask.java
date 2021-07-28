@@ -80,6 +80,9 @@ public class GameLoopTask implements Runnable, Listener {
 
                     // Move piece
                     for (int i = 0; i < moveEvent.getTotalStep(); i++) {
+                        if (nextSlot == null) {
+                            break;
+                        }
                         PiecePassingSlotEvent passingSlotEvent = callEvent(PiecePassingSlotEvent.class, selected, nextSlot);
                         if (passingSlotEvent.isAbort()) {
                             break;

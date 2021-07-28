@@ -5,11 +5,13 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Flagged;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.ChessBoard;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Piece;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Slot;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.SlotType;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.EventListener;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.Listener;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PieceDropBackEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PiecePassingSlotEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PiecePassingTrackEvent;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PieceReachedGoalEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PieceReachedTargetEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PieceSkipEvent;
 
@@ -38,12 +40,19 @@ public class PieceListener implements Listener {
     public void onReachTarget(PieceReachedTargetEvent e) {
         Slot s = e.getSlot();
         Piece p = e.getPiece();
+        if (s.getType() == SlotType.TARGET_SLOT) {
+            // Arrived the goal slot
+            e.addSubEvent(new PieceReachedGoalEvent(e.getChessBoard(), p));
+            e.setRequireUpdate(false);
+            return;
+        }
         if (s.getFlag() == p.getFlag()) {
-            Sabrina.getEventManager().callListener(
+            e.addSubEvent(
                     s.isOnTrack() ?
                     new PiecePassingTrackEvent(e.getChessBoard(), p, s) :
                     new PieceSkipEvent(e.getChessBoard(), p, s)
             );
+            e.setRequireUpdate(false);
             return;
         }
         if (isAgainst(s, e)) {
@@ -56,7 +65,8 @@ public class PieceListener implements Listener {
         Slot s = e.getTargetSlot();
         Piece p = e.getPiece();
         if (s.isOnTrack()) {
-            new PiecePassingTrackEvent(e.getChessBoard(), p, s);
+            e.addSubEvent(new PiecePassingTrackEvent(e.getChessBoard(), p, s));
+            e.setRequireUpdate(false);
             return;
         }
         if (isAgainst(s, p)) {

@@ -3,8 +3,6 @@ package com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +46,9 @@ public class EventManager {
     public void callListener(Event event) {
         callListener(event, ListenerType.Listener);
         callListener(event, ListenerType.Monitor);
+        for (Event subEvent : event.getSubEvents()) {
+            callListener(subEvent);
+        }
     }
 
     private void callListener(Event event, ListenerType type){
