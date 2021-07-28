@@ -21,8 +21,8 @@ public class RobotListener implements Listener {
         Sabrina.getEventManager().registerListener(this);
     }
 
-    @EventListener(type = ListenerType.Listener)
-    public void onWaitSelectPieceEvent(PlayerSelectPieceEvent e) {
+    @EventListener
+    public void onWaitSelectPiece(PlayerSelectPieceEvent e) {
         Player p = e.getPlayer();
         if (p.isRobot() || p.getType() == PlayerType.ROBOT) {
             List<Piece> availablePieces = e.getAvailablePieces();
