@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.List;
@@ -39,7 +41,7 @@ public class  PlayerAdapter extends BaseAdapter {
     }
 
     static class PlayerViewHolder {
-        public ImageView imageView;
+        public Spinner spColorChoice;
         public TextView tvUserID;
     }
 
@@ -49,7 +51,7 @@ public class  PlayerAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mLayoutInflater.inflate(R.layout.layout_list_player, null);
             holder = new PlayerViewHolder();
-            holder.imageView =(ImageView) convertView.findViewById(R.id.ivRoomMember);
+            holder.spColorChoice=convertView.findViewById(R.id.spColor);
             holder.tvUserID=convertView.findViewById(R.id.tv_useID);
             convertView.setTag(holder);
         }else{
@@ -57,6 +59,10 @@ public class  PlayerAdapter extends BaseAdapter {
         }
         String name=numplayer.get(position);
         holder.tvUserID.setText(name);
+        String[]numColor=new String[]{"Red","Yellow","Blue","Green"};
+        ArrayAdapter<String> colorAdapter=new ArrayAdapter<String>(mContext,R.layout.spinner_text_item,numColor);
+        colorAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
+        holder.spColorChoice.setAdapter(colorAdapter);
         return convertView;
     }
 }

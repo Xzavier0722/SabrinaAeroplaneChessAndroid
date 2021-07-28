@@ -65,6 +65,14 @@
             android:layout_below="@+id/btnTRoomHall"
             android:layout_marginBottom="10dp">
         </Button>
+        <Button
+            android:id="@+id/btnTSinglePlayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SinglePlayer"
+            android:layout_below="@id/btnTCreateRoom"
+            android:layout_marginBottom="10dp">
+        </Button>
 
     </RelativeLayout>
 

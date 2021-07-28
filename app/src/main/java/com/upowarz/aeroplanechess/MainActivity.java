@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mbtnMutilplayer;
     private Button mbtnRoomHall;
     private Button mbtnCreateRoom;
+    private Button mbtnSingle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         mbtnMutilplayer=(Button)findViewById(R.id.btnTMutilplayer);
         mbtnRoomHall=(Button)findViewById(R.id.btnTRoomHall);
         mbtnCreateRoom=(Button)findViewById(R.id.btnTCreateRoom);
+        mbtnSingle=findViewById(R.id.btnTSinglePlayer);
         mbtnStartPage.setOnClickListener(onclick);
         mbtnLoginPage.setOnClickListener(onclick);
         mbtnMenuPage.setOnClickListener(onclick);
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         mbtnMutilplayer.setOnClickListener(onclick);
         mbtnRoomHall.setOnClickListener(onclick);
         mbtnCreateRoom.setOnClickListener(onclick);
+        mbtnSingle.setOnClickListener(onclick);
     }
 
     private class Onclick implements View.OnClickListener{
@@ -65,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.btnTCreateRoom:
                     i=new Intent(MainActivity.this,CreateRoomPage.class);
+                    break;
+                case R.id.btnTSinglePlayer:
+                    i=new Intent(MainActivity.this,SinglePlayerPage.class);
                     break;
             }
             startActivity(i);

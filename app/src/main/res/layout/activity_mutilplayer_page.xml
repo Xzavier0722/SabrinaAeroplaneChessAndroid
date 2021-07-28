@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MutilplayerPage">
-    <com.upowarz.aeroplanechess.IconButton
-        android:id="@+id/btnMultiBack"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:text="@string/back"
-        android:layout_alignParentLeft="true"
-        android:background="@null"
-        ></com.upowarz.aeroplanechess.IconButton>
-    <TextView
-        android:id="@+id/tv_RoomID"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="111111111"
-        android:textSize="50sp"
-        android:gravity="center"
-        android:layout_margin="10dp"
-        ></TextView>
-    <ListView
-        android:id="@+id/listPlayer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_RoomID"
-        ></ListView>
-    <com.upowarz.aeroplanechess.IconButton
-        android:id="@+id/btnStartPlay"
-        android:text="@string/aeroplane"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/listPlayer"
-        android:background="@drawable/selector_normal_button"
-        ></com.upowarz.aeroplanechess.IconButton>
-</RelativeLayout>
+        android:layout_height="match_parent">
+        <com.upowarz.aeroplanechess.IconButton
+            android:id="@+id/btnMultiBack"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:text="@string/back"
+            android:layout_alignParentLeft="true"
+            android:background="@null"
+            ></com.upowarz.aeroplanechess.IconButton>
+        <TextView
+            android:id="@+id/tv_RoomID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="111111111"
+            android:textSize="50sp"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            ></TextView>
+
+        <ListView
+            android:id="@+id/listPlayer"
+            android:layout_width="708dp"
+            android:layout_height="170dp"
+            android:layout_below="@id/tv_RoomID"></ListView>
+        <com.upowarz.aeroplanechess.IconButton
+            android:id="@+id/btnStartPlay"
+            android:text="@string/aeroplane"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/listPlayer"
+            android:background="@drawable/selector_normal_button"
+            android:layout_margin="20dp"
+            ></com.upowarz.aeroplanechess.IconButton>
+    </RelativeLayout>
+
+</ScrollView>

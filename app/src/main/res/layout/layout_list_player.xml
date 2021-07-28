@@ -7,14 +7,8 @@
     android:paddingRight="15dp"
     android:paddingBottom="10dp"
     android:paddingTop="10dp">
-    <ImageView
-        android:id="@+id/ivRoomMember"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:scaleType="centerCrop"
-        android:background="@color/black"></ImageView>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -25,6 +19,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hello"
-            android:textSize="20sp"></TextView>
-    </LinearLayout>
+            android:textSize="20sp"
+            android:layout_margin="10dp"></TextView>
+        <Spinner
+            android:id="@+id/spColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            ></Spinner>
+        <com.upowarz.aeroplanechess.IconButton
+            android:id="@+id/btnKick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_normal_button"
+            android:text="@string/kick"
+            android:layout_toLeftOf="@id/spColor"
+            android:textSize="30dp"></com.upowarz.aeroplanechess.IconButton>
+    </RelativeLayout>
+
 </LinearLayout>

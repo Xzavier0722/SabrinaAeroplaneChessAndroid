@@ -9,31 +9,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name="com.upowarz.aeroplanechess.PersonalPage"></activity>
+        <activity android:name=".GameEndPage"></activity>
         <activity
-            android:name="com.upowarz.aeroplanechess.CreateRoomPage"
-            android:screenOrientation="landscape"></activity>
+            android:name=".SinglePlayerPage"
+            android:screenOrientation="landscape" />
+        <activity android:name=".PersonalPage" />
         <activity
-            android:name="com.upowarz.aeroplanechess.RoomHallPage"
-            android:screenOrientation="landscape"></activity>
-        <activity android:name="com.upowarz.aeroplanechess.LoadingPage" />
-        <activity
-            android:name="com.upowarz.aeroplanechess.MutilplayerPage"
+            android:name=".CreateRoomPage"
             android:screenOrientation="landscape" />
         <activity
-            android:name="com.upowarz.aeroplanechess.StartPage"
+            android:name=".RoomHallPage"
+            android:screenOrientation="landscape" />
+        <activity android:name=".LoadingPage" />
+        <activity
+            android:name=".MutilplayerPage"
             android:screenOrientation="landscape" />
         <activity
-            android:name="com.upowarz.aeroplanechess.MenuPage"
+            android:name=".StartPage"
             android:screenOrientation="landscape" />
         <activity
-            android:name="com.upowarz.aeroplanechess.LoginPage"
+            android:name=".MenuPage"
             android:screenOrientation="landscape" />
         <activity
-            android:name="com.upowarz.aeroplanechess.GameProcessPage"
+            android:name=".LoginPage"
             android:screenOrientation="landscape" />
         <activity
-            android:name="com.upowarz.aeroplanechess.MainActivity"
+            android:name=".GameProcessPage"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

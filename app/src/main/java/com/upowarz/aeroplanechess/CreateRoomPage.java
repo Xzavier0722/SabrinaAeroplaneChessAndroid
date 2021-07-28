@@ -15,7 +15,6 @@ public class CreateRoomPage extends AppCompatActivity{
         String[]numMember=new String[]{"1","2","3","4"};
         ArrayAdapter<String> roomAdapter=new ArrayAdapter<String>(this,R.layout.spinner_text_item,numMember);
         roomAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
-        spMember.setPrompt("Select number of member");
         spMember.setAdapter(roomAdapter);
 
     }
