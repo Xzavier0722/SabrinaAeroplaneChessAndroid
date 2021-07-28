@@ -133,4 +133,8 @@ public class ChessBoard {
         return players.get(flag);
     }
 
+    public Set<Player> getPlayers() {
+        return new HashSet<>(players.values());
+    }
+
 }
