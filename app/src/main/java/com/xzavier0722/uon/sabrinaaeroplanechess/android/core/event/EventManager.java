@@ -34,11 +34,7 @@ public class EventManager {
 
             // Add executor
             listeners.computeIfAbsent(annotation.type(), k -> new HashMap<>()).computeIfAbsent(eventClass, k -> new HashSet<>()).add(event -> {
-                try {
-                    each.invoke(listener, event);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                each.invoke(listener, event);
             });
         }
     }
@@ -59,7 +55,12 @@ public class EventManager {
         if (executors == null) return;
 
         for (ListenerExecutor each : executors) {
-            each.handle(event);
+            try {
+                each.handle(event);
+            } catch (Throwable e) {
+                System.err.println("Exception thrown while calling the event: "+e.getClass().getSimpleName());
+                e.printStackTrace();
+            }
         }
     }
 

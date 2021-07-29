@@ -12,6 +12,7 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PiecePassi
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PieceReachedGoalEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PieceReachedTargetEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.piece.PieceSkipEvent;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.player.PlayerWinEvent;
 
 public class ChessBoardMonitor implements Listener {
 
@@ -49,6 +50,10 @@ public class ChessBoardMonitor implements Listener {
         if (!e.isRequireUpdate()) return;
         Piece p = e.getPiece();
         p.setWon();
+        ChessBoard chessBoard = e.getChessBoard();
+        if (chessBoard.isWon(p.getFlag())) {
+            e.addSubEvent(new PlayerWinEvent(chessBoard, chessBoard.getPlayer(p.getFlag())));
+        }
         e.getChessBoard().setPieceToSlot(p, p.getHomeSlot());
     }
 

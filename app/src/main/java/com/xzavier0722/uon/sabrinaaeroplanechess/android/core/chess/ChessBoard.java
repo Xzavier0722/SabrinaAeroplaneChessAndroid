@@ -22,8 +22,8 @@ public class ChessBoard {
 
     public ChessBoard(Set<Player> players) {
 
-        if (players.size() > 4) {
-            throw new IllegalArgumentException("Player count must be less than 4");
+        if (players.size() < 2 || players.size() > 4) {
+            throw new IllegalArgumentException("Player count must in 2 - 4!");
         }
 
         // Add players

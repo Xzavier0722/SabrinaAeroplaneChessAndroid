@@ -19,7 +19,6 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.player.PlayerWin
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.process.GameEndEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.process.GameStartEvent;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -39,77 +38,77 @@ public class GameLoopTask implements Runnable, Listener {
     @Override
     public void run() {
 
-        callEvent(GameStartEvent.class);
+        callEvent(new GameStartEvent(chessBoard));
         do {
             doRound();
         } while (chessBoard.getPlayingCount() > 1);
-        callEvent(GameEndEvent.class, ranking);
+        callEvent(new GameEndEvent(chessBoard, ranking));
     }
 
     private void doRound() {
         chessBoard.forEachFlag(flag -> {
-            if (!chessBoard.isWon(flag)) {
-                Player p = chessBoard.getPlayer(flag);
-                int dice;
-                int count = 0;
-                do {
-                    count++;
+            if (chessBoard.isWon(flag)) return;
 
-                    if (count > 3) {
-                        for (Piece each : chessBoard.getProcessingPieces(flag)) {
-                            callEvent(PieceDropBackEvent.class, each);
-                        }
+            Player p = chessBoard.getPlayer(flag);
+            int dice;
+            int count = 0;
+            do {
+                count++;
+
+                if (count > 2) {
+                    for (Piece each : chessBoard.getProcessingPieces(flag)) {
+                        callEvent(new PieceDropBackEvent(chessBoard, each));
                     }
+                    return;
+                }
 
-                    dice = random.nextInt(7);
-                    // Call turn start event
-                    callEvent(PlayerTurnStartEvent.class, p, dice);
+                dice = 1 + random.nextInt(6);
+                // Call turn start event
+                callEvent(new PlayerTurnStartEvent(chessBoard, p, dice));
 
-                    // Call select event
-                    PlayerSelectPieceEvent selectPieceEvent = callEvent(PlayerSelectPieceEvent.class, p, dice, getAvailablePieces(chessBoard.getProcessingPieces(flag),dice));
+                // Call select event
+                List<Piece> availablePieces = getAvailablePieces(chessBoard.getProcessingPieces(flag),dice);
+                if (availablePieces.size() <= 0) {
+                    callEvent(new PlayerTurnEndEvent(chessBoard, p));
+                    continue;
+                }
+                PlayerSelectPieceEvent selectPieceEvent = callEvent(new PlayerSelectPieceEvent(chessBoard, p, dice, availablePieces));
 
-                    // Get selected piece
-                    Piece selected = selectPieceEvent.getSelectedPiece();
-                    if (selected == null) {
-                        throw new IllegalStateException("No selected piece specified");
+                // Get selected piece
+                Piece selected = selectPieceEvent.getSelectedPiece();
+                if (selected == null) {
+                    throw new IllegalStateException("No selected piece specified");
+                }
+
+                Slot lastSlot = selected.getCurrentSlot();
+                // Call piece move event
+                PieceMoveEvent moveEvent = callEvent(new PieceMoveEvent(chessBoard, selected, dice));
+
+                // Move piece
+                for (int i = 0; i < moveEvent.getTotalStep(); i++) {
+                    Slot nextSlot = chessBoard.getSlots().getNext(flag, lastSlot);
+                    if (nextSlot == null) {
+                        break;
                     }
-
-                    Slot nextSlot = chessBoard.getSlots().getNext(flag, selected.getCurrentSlot());
-                    // Call piece move event
-                    PieceMoveEvent moveEvent = callEvent(PieceMoveEvent.class, selected, dice);
-
-                    // Move piece
-                    for (int i = 0; i < moveEvent.getTotalStep(); i++) {
-                        if (nextSlot == null) {
-                            break;
-                        }
-                        PiecePassingSlotEvent passingSlotEvent = callEvent(PiecePassingSlotEvent.class, selected, nextSlot);
-                        if (passingSlotEvent.isAbort()) {
-                            break;
-                        }
-                        nextSlot = chessBoard.getSlots().getNext(flag, selected.getCurrentSlot());
+                    PiecePassingSlotEvent passingSlotEvent = callEvent(new PiecePassingSlotEvent(chessBoard, selected, nextSlot));
+                    lastSlot = nextSlot;
+                    if (passingSlotEvent.isAbort()) {
+                        break;
                     }
+                }
 
-                    // Call reached target event
-                    callEvent(PieceReachedTargetEvent.class, selected, nextSlot);
+                // Call reached target event
+                callEvent(new PieceReachedTargetEvent(chessBoard, selected, lastSlot));
 
-                    // Call turn end event
-                    callEvent(PlayerTurnEndEvent.class, p);
-                }while (dice == 6);
-            }
+                // Call turn end event
+                callEvent(new PlayerTurnEndEvent(chessBoard, p));
+            }while (dice == 6);
         });
     }
 
-    private <T extends Event> T callEvent(Class<T> tClass, Object... paras) {
-        try {
-            Constructor<?>[] constructors = tClass.getConstructors();
-            T event = (T) constructors[0].newInstance(chessBoard, paras);
-            Sabrina.getEventManager().callListener(event);
-            return event;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalStateException("Exception thrown while calling the event: "+tClass.getSimpleName());
-        }
+    private <T extends Event> T callEvent(T e) {
+        Sabrina.getEventManager().callListener(e);
+        return e;
     }
 
     private List<Piece> getAvailablePieces(Set<Piece> processingPiece, int dice) {

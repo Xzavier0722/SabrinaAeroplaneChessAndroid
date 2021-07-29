@@ -239,7 +239,7 @@ public class Slots {
 
         int targetSlotIndex = currentSlot.ordinal() + num;
         if (targetSlotIndex >= slots.size()) {
-            targetSlotIndex = slots.size() - targetSlotIndex;
+            targetSlotIndex = targetSlotIndex - slots.size();
         }
         return slots.get(targetSlotIndex);
     }
