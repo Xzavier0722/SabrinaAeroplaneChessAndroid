@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.Sabrina;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Flagged;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Player;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.PlayerType;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.ChessBoard;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Piece;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.EventListener;
@@ -36,52 +38,85 @@ public class ListenerChessBoard implements Listener {
     @EventListener
     public void init(GameStartEvent e){
         CacheManager.put("eventInit", e);
+        SinglePlayerPage.instance.runOnUiThread( () -> {
+            Intent jump=new Intent(SinglePlayerPage.instance,GameProcessPage.class);
+            SinglePlayerPage.instance.startActivity(jump);
+        });
+        try {
+            synchronized (e) {
+                e.wait();
+            }
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
     }
 
     @EventListener
     public void onPlayerTurn(PlayerTurnStartEvent e){
-        GameProcessPage.instance.mbtnRoll.setEnabled(true);
+        String str=e.getPlayer().getName()+" turn! Roll!";
+        setText(GameProcessPage.instance.mtvInfoBar,str);
+        if (e.getPlayer().getType() != PlayerType.LOCAL) return;
+        GameProcessPage.instance.runOnUiThread(() -> GameProcessPage.instance.mbtnRoll.setEnabled(true));
         CacheManager.put("eventPlayerTurn", e);
-        GameProcessPage.instance.setMtvInfoBar(e.getPlayer().getName()+"'s turn! Roll!");
-        while(!GameProcessPage.instance.result){
+        GameProcessPage.instance.mbtnRoll.setOnClickListener(v->{
+            synchronized (e) {
+                e.notifyAll();
+                GameProcessPage.instance.mbtnRoll.setEnabled(false);
+            }
+        });
+        synchronized (e) {
             try {
-                Thread.sleep(300);
+                e.wait();
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
             }
         }
-        GameProcessPage.instance.setMtvInfoBar(e.getPlayer().getName()+"Roll"+e.getDiceNum());
-        GameProcessPage.instance.result=false;
+    }
+
+    @EventListener(type = ListenerType.Monitor)
+    public void onPostPlayerTurn(PlayerTurnStartEvent e) {
+        String str=e.getPlayer().getName()+" Rolled "+e.getDiceNum();
+        setText(GameProcessPage.instance.mtvInfoBar,str);
     }
 
     @EventListener
     public void onSelectPieceEvent(PlayerSelectPieceEvent e) {
+        if (e.getPlayer().getType() != PlayerType.LOCAL) return;
         Set<ChessButton> enabled = new HashSet<>();
         Thread t = Thread.currentThread();
-        for (Piece piece: e.getAvailablePieces()) {
-            ChessButton btn = getBtn(e, piece);
-            btn.setEnable(true);
-            enabled.add(btn);
-            btn.setOnClickListener(v -> {
-                e.setSelectedPiece(btn.getPiece());
-                for (ChessButton cb : enabled) {
-                    cb.setEnable(false);
-                }
-                t.notify();
-            });
-            try {
-                t.wait();
-            } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
+        GameProcessPage.instance.runOnUiThread(()->{
+            for (Piece piece: e.getAvailablePieces()) {
+                ChessButton btn = getBtn(e, piece);
+                btn.setEnable(true);
+                enabled.add(btn);
+                btn.setOnClickListener(v -> {
+                    e.setSelectedPiece(btn.getPiece());
+                    for (ChessButton cb : enabled) {
+                        cb.setEnable(false);
+                    }
+                    synchronized (t) {
+                        t.notify();
+                    }
+                });
             }
+        });
+        try {
+            synchronized (t) {
+                t.wait();
+            }
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
         }
     }
 
     @EventListener
     public void onGameEndEvent(GameEndEvent e){
         CacheManager.put("rankList", e.getRanking());
-        Intent intent=new Intent(GameProcessPage.instance,GameEndEvent.class);
-        GameProcessPage.instance.startActivity(intent);
+        GameProcessPage.instance.runOnUiThread(()->{
+            Intent intent=new Intent(GameProcessPage.instance,GameEndPage.class);
+            GameProcessPage.instance.startActivity(intent);
+        });
+
     }
 
     @EventListener(type = ListenerType.Monitor)
@@ -90,8 +125,27 @@ public class ListenerChessBoard implements Listener {
     }
 
     @EventListener(type = ListenerType.Monitor)
+    public void onPlayerTurnEnd(PlayerTurnEndEvent e) {
+        GameProcessPage.instance.scheduleAnimation(new AnimationTask(0) {
+            @Override
+            public void execute() {
+                synchronized (e) {
+                    e.notifyAll();
+                }
+            }
+        });
+        synchronized (e) {
+            try {
+                e.wait();
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
+        }
+    }
+
+    @EventListener(type = ListenerType.Monitor)
     public void onPiecePassingTrackEvent(PiecePassingTrackEvent e) {
-        GameProcessPage.instance.animationMove(getBtn(e, e.getPiece()),e.getTargetSlot(), 200, 2000);
+        GameProcessPage.instance.animationMove(getBtn(e,e.getPiece()),e.getTargetSlot(),200,2000);
     }
 
     @EventListener(type = ListenerType.Monitor)
@@ -107,6 +161,12 @@ public class ListenerChessBoard implements Listener {
 
     private ChessButton getBtn(Flagged f, Piece p) {
         return GameProcessPage.instance.getChessButtons(f.getFlag()).get(p.getId());
+    }
+
+    private void setText(TextView tv, String text) {
+        GameProcessPage.instance.runOnUiThread(() -> {
+            tv.setText(text);
+        });
     }
 
 }

@@ -32,6 +32,7 @@ public class ChessButton extends ImageButton {
             throw new IllegalStateException("Exception thrown while loading the resource");
         }
         this.setBackground(bg);
+        setDirection(piece.getCurrentSlot().getFace());
     }
 
     /**

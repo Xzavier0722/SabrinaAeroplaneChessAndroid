@@ -33,8 +33,11 @@ public class SinglePlayerPage extends AppCompatActivity {
     private Button mbtnSingle;
     private Set<Player> playerSet;
 
+    public static SinglePlayerPage instance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        instance = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_player_page);
         init();
@@ -70,10 +73,10 @@ public class SinglePlayerPage extends AppCompatActivity {
         mbtnSingle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mbtnSingle.setEnabled(false);
                 check();
                 GameLoopTask task = new GameLoopTask(new ChessBoard(playerSet));
                 mThreadPool.execute(task);
-                Intent jump=new Intent(SinglePlayerPage.this,GameProcessPage.class);
             }
         });
 
@@ -84,15 +87,22 @@ public class SinglePlayerPage extends AppCompatActivity {
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     PlayerFlag[] values = PlayerFlag.values();
                     RadioButton rd=group.findViewById(checkedId);
-                    if(rd.getText().equals("Robot")){
-                        editTextList.get(finalI).setText("Robot"+values[finalI].toString().toLowerCase());
-                        editTextList.get(finalI).setEnabled(false);
-                    }else if(rd.getText().equals("Player")){
-                        editTextList.get(finalI).setEnabled(true);
-                    }else if(rd.getText().equals("None")) {
-                        editTextList.get(finalI).setText("None");
-                        editTextList.get(finalI).setEnabled(false);
-                    }
+                    String str = rd.getText().toString();
+
+                    EditText et = editTextList.get(finalI);
+
+                    et.setEnabled(str.equals("Player"));
+                    et.setText(str.equals("Robot") ? "Robot "+values[finalI].toString() : str);
+//
+//                    if(rd.getText().equals("Robot")){
+//                        editTextList.get(finalI).setText();
+//                        editTextList.get(finalI).setEnabled(false);
+//                    }else if(rd.getText().equals("Player")){
+//                        editTextList.get(finalI).setEnabled(true);
+//                    }else if(rd.getText().equals("None")) {
+//                        editTextList.get(finalI).setText("None");
+//                        editTextList.get(finalI).setEnabled(false);
+//                    }
                 }
             });
         }
@@ -110,7 +120,7 @@ public class SinglePlayerPage extends AppCompatActivity {
 
     private Optional<Player> getPlayer(PlayerFlag flag, String typeStr) {
         if (typeStr.equals("None")) return Optional.empty();
-        return Optional.of(new Player(flag, "Robot"+flag.name(), typeStr.equals("Robot") ? PlayerType.ROBOT : PlayerType.LOCAL));
+        return Optional.of(new Player(flag, editTextList.get(flag.ordinal()).getText().toString(), typeStr.equals("Robot") ? PlayerType.ROBOT : PlayerType.LOCAL));
     }
 
 }

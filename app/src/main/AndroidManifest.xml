@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".GameEndPage"></activity>
+        <activity android:name=".GameEndPage"
+            android:screenOrientation="landscape" ></activity>
         <activity
             android:name=".SinglePlayerPage"
             android:screenOrientation="landscape" />

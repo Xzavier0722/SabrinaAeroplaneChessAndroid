@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class CacheManager {
 
-    private static Map<String, Object> data = new HashMap<>();
+    private volatile static Map<String, Object> data = new HashMap<>();
 
     public static void put(String key, Object value) {
         data.put(key, value);

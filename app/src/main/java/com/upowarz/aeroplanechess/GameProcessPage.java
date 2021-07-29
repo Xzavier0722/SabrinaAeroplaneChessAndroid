@@ -36,21 +36,29 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class GameProcessPage extends AppCompatActivity{
+
     private AbsoluteLayout mABLayout;
     private LinearLayout.LayoutParams mLParams;
     private LinearLayout linearLayout;
+
+
     public Button mbtnRoll;
-    private TextView mtvInfoBar;
-    private TextView mtvPlayerList;
-    private Slots slots;
+    public TextView mtvInfoBar;
+    public TextView mtvPlayerList;
+
+
     private int height;
     private float mapGap;
     private int chessSize;
+    public boolean result;
+
+
+    private Slots slots;
     private BlockingQueue<AnimationTask> animationQueue = new LinkedBlockingDeque<>();
     private MediaPlayer soundPlayer;
     private List<Player>playerList;
     private Map<PlayerFlag, Map<Integer, ChessButton>> chessButtons;
-    public boolean result;
+
 
     public static GameProcessPage instance;
 
@@ -80,8 +88,10 @@ public class GameProcessPage extends AppCompatActivity{
         //Call listener
         GameStartEvent gameStartEvent=CacheManager.get("eventInit",GameStartEvent.class,null);
 
+        initChessBoard(gameStartEvent.getChessBoard());
+
         //Call Thread
-        final ExecutorService mThreadPool = Executors.newCachedThreadPool();
+        ExecutorService mThreadPool = Executors.newCachedThreadPool();
         mThreadPool.execute(()->{
             while (true) {
                 try{
@@ -93,20 +103,10 @@ public class GameProcessPage extends AppCompatActivity{
                 }
             }
         });
-
-        mThreadPool.execute(()->{
-            GameProcessPage.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    initChessBoard(gameStartEvent.getChessBoard());
-                }
-            });
-        });
-
-
+        synchronized (gameStartEvent) {
+            gameStartEvent.notifyAll();
+        }
     }
-
-
 
 
     private void init() {
@@ -166,18 +166,25 @@ public class GameProcessPage extends AppCompatActivity{
         mtvPlayerList.setText(text);
     }
 
+    public void scheduleAnimation(AnimationTask task) {
+        animationQueue.offer(task);
+    }
+
 
     private void initChessBoard(ChessBoard chessBoard){
+
         StringBuilder sb = new StringBuilder();
+
         for(Player player:chessBoard.getPlayers()){
             Map<Integer, ChessButton> flaggedBtns = new HashMap<>();
-            sb.append(player.getName());
+            sb.append(player.getName()+"\n");
+
             for(Piece piece:chessBoard.getPieces(player.getFlag())){
                 ChessButton chessButton = new ChessButton(this,piece);
                 chessButton.setEnable(false);
                 flaggedBtns.put(piece.getId(), chessButton);
-
-                AbsoluteLayout.LayoutParams layoutParams = new AbsoluteLayout.LayoutParams(height,height,getPieceLocation(chessButton.getPiece(),SlotType.HOME_SLOT).getX(),getPieceLocation(chessButton.getPiece(),SlotType.HOME_SLOT).getY());
+                Location l = piece.getCurrentSlot().getLocation();
+                AbsoluteLayout.LayoutParams layoutParams = new AbsoluteLayout.LayoutParams(chessSize,chessSize,getAxis(l.getX()),getAxis(l.getY()));
                 mABLayout.addView(chessButton,layoutParams);
             }
             chessButtons.put(player.getFlag(), flaggedBtns);
@@ -186,14 +193,7 @@ public class GameProcessPage extends AppCompatActivity{
     }
 
 
-    private Location getPieceLocation(Piece piece, SlotType slotType)
-    {
-        if (slotType==SlotType.HOME_SLOT){
-            return piece.getHomeSlot().getLocation();
-        }else{
-            return piece.getCurrentSlot().getLocation();
-        }
-    }
+
 
 
     public Map<Integer, ChessButton> getChessButtons(PlayerFlag flag){
