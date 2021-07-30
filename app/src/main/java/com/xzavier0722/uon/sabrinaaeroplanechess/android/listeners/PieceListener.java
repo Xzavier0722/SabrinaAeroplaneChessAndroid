@@ -54,10 +54,9 @@ public class PieceListener implements Listener {
         if (s.getType() == SlotType.TARGET_SLOT) {
             // Arrived the goal slot
             e.addSubEvent(new PieceReachedGoalEvent(e.getChessBoard(), p));
-            e.setRequireUpdate(false);
             return;
         }
-        if (!s.isLast() && s.getType() == SlotType.PUBLIC_SLOT && s.getFlag() == p.getFlag()) {
+        if (!e.isAborted() && !s.isLast() && s.getType() == SlotType.PUBLIC_SLOT && s.getFlag() == p.getFlag()) {
             e.addSubEvent(
                     s.isOnTrack() ?
                     new PiecePassingTrackEvent(e.getChessBoard(), p, s) :

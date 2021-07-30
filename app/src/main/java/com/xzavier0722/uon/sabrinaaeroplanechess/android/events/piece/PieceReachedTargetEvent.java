@@ -6,7 +6,14 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Slot;
 
 public class PieceReachedTargetEvent extends PieceOnSlotEvent {
 
-    public PieceReachedTargetEvent(ChessBoard chessBoard, Piece piece, Slot slot) {
+    private final boolean aborted;
+
+    public PieceReachedTargetEvent(ChessBoard chessBoard, Piece piece, Slot slot, boolean aborted) {
         super(chessBoard, piece, slot);
+        this.aborted = aborted;
+    }
+
+    public boolean isAborted() {
+        return aborted;
     }
 }

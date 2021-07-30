@@ -55,16 +55,17 @@ public class GameLoopTask implements Runnable, Listener {
             do {
                 count++;
 
-                if (count > 2) {
+                dice = 1 + random.nextInt(6);
+                // Call turn start event
+                callEvent(new PlayerTurnStartEvent(chessBoard, p, dice));
+
+                // 3 times of 6, drop all processing chess back to the home
+                if (count > 2 && dice == 6) {
                     for (Piece each : chessBoard.getProcessingPieces(flag)) {
                         callEvent(new PieceDropBackEvent(chessBoard, each));
                     }
                     return;
                 }
-
-                dice = 1 + random.nextInt(6);
-                // Call turn start event
-                callEvent(new PlayerTurnStartEvent(chessBoard, p, dice));
 
                 // Call select event
                 List<Piece> availablePieces = getAvailablePieces(chessBoard.getProcessingPieces(flag),dice);
@@ -84,6 +85,7 @@ public class GameLoopTask implements Runnable, Listener {
                 // Call piece move event
                 PieceMoveEvent moveEvent = callEvent(new PieceMoveEvent(chessBoard, selected, dice));
 
+                boolean isAborted = false;
                 // Move piece
                 for (int i = 0; i < moveEvent.getTotalStep(); i++) {
                     Slot nextSlot = chessBoard.getSlots().getNext(flag, lastSlot);
@@ -93,16 +95,17 @@ public class GameLoopTask implements Runnable, Listener {
                     PiecePassingSlotEvent passingSlotEvent = callEvent(new PiecePassingSlotEvent(chessBoard, selected, nextSlot));
                     lastSlot = nextSlot;
                     if (passingSlotEvent.isAbort()) {
+                        isAborted = true;
                         break;
                     }
                 }
 
                 // Call reached target event
-                callEvent(new PieceReachedTargetEvent(chessBoard, selected, lastSlot));
+                callEvent(new PieceReachedTargetEvent(chessBoard, selected, lastSlot, isAborted));
 
                 // Call turn end event
                 callEvent(new PlayerTurnEndEvent(chessBoard, p));
-            }while (dice == 6);
+            }while (dice == 6 && !chessBoard.isWon(flag));
         });
     }
 
