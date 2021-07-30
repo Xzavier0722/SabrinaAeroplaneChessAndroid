@@ -42,6 +42,7 @@ public class EventManager {
     public void callListener(Event event) {
         callListener(event, ListenerType.Listener);
         callListener(event, ListenerType.Monitor);
+        callListener(event, ListenerType.Post);
         for (Event subEvent : event.getSubEvents()) {
             callListener(subEvent);
         }
