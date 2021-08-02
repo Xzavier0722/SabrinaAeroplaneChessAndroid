@@ -17,6 +17,7 @@
             android:layout_height="30dp"
             android:layout_alignParentLeft="true"
             android:background="@null"
+            android:layout_margin="10dp"
             android:text="@string/back"></com.upowarz.aeroplanechess.IconButton>
         <TextView
             android:id="@+id/txView1"
@@ -24,46 +25,78 @@
             android:layout_height="wrap_content"
             android:text="Number of member"
             android:textSize="25sp"
+            android:layout_margin="10dp"
             android:layout_below="@+id/btnCreateBack"></TextView>
-        <Spinner
-            android:id="@+id/spRoomMember"
+        <RadioGroup
+            android:id="@+id/rdSelectNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txView1"
-            ></Spinner>
+            android:layout_below="@id/txView1"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_margin="10dp">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:textSize="20dp"
+                android:layout_margin="10dp"
+                android:checked="true"></RadioButton>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:textSize="20dp"
+                android:layout_margin="10dp"
+                ></RadioButton>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4"
+                android:textSize="20dp"
+                android:layout_margin="10dp"
+                ></RadioButton>
+
+        </RadioGroup>
         <TextView
             android:id="@+id/txView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Room Type"
-            android:layout_below="@+id/spRoomMember"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/rdSelectNum"
             android:textSize="25sp"></TextView>
         <RadioGroup
-            android:id="@+id/rBtnG"
-            android:layout_width="wrap_content"
+            android:id="@+id/rBtnGRange"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txView2"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            android:orientation="horizontal"
+            android:gravity="center">
             <RadioButton
                 android:id="@+id/rBtnPublic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="public"
                 android:checked="true"
+                android:layout_margin="10dp"
                 android:textSize="25sp"></RadioButton>
             <RadioButton
                 android:id="@+id/rBtnPrivate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="private"
+                android:layout_margin="10dp"
                 android:textSize="25sp"></RadioButton>
         </RadioGroup>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rBtnG"
+            android:layout_below="@id/rBtnGRange"
             android:text="Create"
             android:textSize="20sp"
+            android:layout_margin="10dp"
             android:background="@drawable/selector_normal_button"></Button>
 
 

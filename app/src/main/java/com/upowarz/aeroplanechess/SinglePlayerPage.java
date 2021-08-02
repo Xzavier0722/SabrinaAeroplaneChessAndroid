@@ -2,9 +2,13 @@ package com.upowarz.aeroplanechess;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,17 +53,21 @@ public class SinglePlayerPage extends AppCompatActivity {
         editTextList=new ArrayList<>();
         radioGroupList=new ArrayList<>();
         for(int i=0;i<4;i++){
-            int edText = 0;
+            int edTextid = 0;
             int raidoGroupID=0;
             try {
-                edText = R.id.class.getField("edTxV"+(i+1)).getInt(null);
+                edTextid = R.id.class.getField("edTxV"+(i+1)).getInt(null);
                 raidoGroupID=R.id.class.getField("rdBtnG"+(i+1)).getInt(null);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
-           editTextList.add(findViewById(edText));
+           EditText editText=findViewById(edTextid);
+           editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+           editText.setSingleLine(true);
+           editText.setHorizontallyScrolling(true);
+           editTextList.add(editText);
             radioGroupList.add(findViewById(raidoGroupID));
         }
 
@@ -86,23 +94,13 @@ public class SinglePlayerPage extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     PlayerFlag[] values = PlayerFlag.values();
-                    RadioButton rd=group.findViewById(checkedId);
+                    RadioButton rd = group.findViewById(checkedId);
                     String str = rd.getText().toString();
 
                     EditText et = editTextList.get(finalI);
 
                     et.setEnabled(str.equals("Player"));
                     et.setText(str.equals("Robot") ? "Robot "+values[finalI].toString() : str);
-//
-//                    if(rd.getText().equals("Robot")){
-//                        editTextList.get(finalI).setText();
-//                        editTextList.get(finalI).setEnabled(false);
-//                    }else if(rd.getText().equals("Player")){
-//                        editTextList.get(finalI).setEnabled(true);
-//                    }else if(rd.getText().equals("None")) {
-//                        editTextList.get(finalI).setText("None");
-//                        editTextList.get(finalI).setEnabled(false);
-//                    }
                 }
             });
         }
@@ -121,6 +119,27 @@ public class SinglePlayerPage extends AppCompatActivity {
     private Optional<Player> getPlayer(PlayerFlag flag, String typeStr) {
         if (typeStr.equals("None")) return Optional.empty();
         return Optional.of(new Player(flag, editTextList.get(flag.ordinal()).getText().toString(), typeStr.equals("Robot") ? PlayerType.ROBOT : PlayerType.LOCAL));
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            new AlertDialog.Builder(this)
+                    .setMessage("Are you sure to return?")
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).setPositiveButton("Back", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            }).show();
+            return  true;
+        }else{
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
 }

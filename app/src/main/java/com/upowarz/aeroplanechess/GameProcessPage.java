@@ -2,12 +2,22 @@ package com.upowarz.aeroplanechess;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,6 +35,8 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.EventListene
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.Listener;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.player.PlayerTurnStartEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.process.GameStartEvent;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.threading.QueuedExecutionThread;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.threading.QueuedTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,27 +49,32 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class GameProcessPage extends AppCompatActivity{
 
-    private AbsoluteLayout mABLayout;
+    public AbsoluteLayout mABLayout;
     private LinearLayout.LayoutParams mLParams;
     private LinearLayout linearLayout;
+    private GridLayout mGrPlayerList;
 
 
     public Button mbtnRoll;
     public TextView mtvInfoBar;
-    public TextView mtvPlayerList;
+    public Map<Player,TextView>setMtvPlayerList;
 
 
     private int height;
     private float mapGap;
-    private int chessSize;
+    public int chessSize;
     public boolean result;
 
 
     private Slots slots;
-    private BlockingQueue<AnimationTask> animationQueue = new LinkedBlockingDeque<>();
+    //private BlockingQueue<AnimationTask> animationQueue = new LinkedBlockingDeque<>();
     private MediaPlayer soundPlayer;
     private List<Player>playerList;
     private Map<PlayerFlag, Map<Integer, ChessButton>> chessButtons;
+    private ChessBoard chessBoard;
+
+    private DiceImage diceImage;
+    private QueuedExecutionThread animationThread;
 
 
     public static GameProcessPage instance;
@@ -88,21 +105,24 @@ public class GameProcessPage extends AppCompatActivity{
         //Call listener
         GameStartEvent gameStartEvent=CacheManager.get("eventInit",GameStartEvent.class,null);
 
+        this.chessBoard = gameStartEvent.getChessBoard();
         initChessBoard(gameStartEvent.getChessBoard());
 
         //Call Thread
-        ExecutorService mThreadPool = Executors.newCachedThreadPool();
-        mThreadPool.execute(()->{
-            while (true) {
-                try{
-                    AnimationTask task = animationQueue.take();
-                    task.execute();
-                    Thread.sleep(task.getWaitTime());
-                }catch (Throwable e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        animationThread = new QueuedExecutionThread();
+        animationThread.start();
+//        ExecutorService mThreadPool = Executors.newCachedThreadPool();
+//        mThreadPool.execute(()->{
+//            while (true) {
+//                try{
+//                    AnimationTask task = animationQueue.take();
+//                    runOnUiThread(() -> task.execute());
+//                    Thread.sleep(task.getWaitTime());
+//                }catch (Throwable e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
         synchronized (gameStartEvent) {
             gameStartEvent.notifyAll();
         }
@@ -110,15 +130,15 @@ public class GameProcessPage extends AppCompatActivity{
 
 
     private void init() {
-
         mABLayout = new AbsoluteLayout(this);
         linearLayout = findViewById(R.id.mainLLayout);
         mbtnRoll = findViewById(R.id.btnRoll);
         mtvInfoBar = findViewById(R.id.tvInfBar);
-        mtvPlayerList = findViewById(R.id.tvPlayerList);
+        mGrPlayerList = findViewById(R.id.GrPlayerList);
 
         chessButtons = new HashMap<>();
         playerList = new ArrayList<>();
+        setMtvPlayerList = new HashMap<>();
         soundPlayer = MediaPlayer.create(this,R.raw.go);
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -136,22 +156,44 @@ public class GameProcessPage extends AppCompatActivity{
     }
 
 
-    private int getAxis(int multiplier) {
+    public int getAxis(int multiplier) {
         return (int)(mapGap*multiplier);
     }
 
 
     public void animationMove(ChessButton chessButton,Slot target, int waitTime, int duration)  {
-        animationQueue.offer(new AnimationTask(duration+waitTime) {
+        scheduleAnimation(new AnimationTask(duration+waitTime) {
             @Override
             public void execute() {
-                runOnUiThread(()->{ // t UI
-                    int moveX = target.getLocation().getX();
-                    int moveY = target.getLocation().getY();
-                    chessButton.setDirection(target.getFace());
-                    chessButton.animate().x(moveX*mapGap).setDuration(duration);
-                    chessButton.animate().y(moveY*mapGap).setDuration(duration);
-                });
+                int moveX = target.getLocation().getX();
+                int moveY = target.getLocation().getY();
+                chessButton.setDirection(target.getFace());
+                chessButton.animate().x(moveX*mapGap).setDuration(duration);
+                chessButton.animate().y(moveY*mapGap).setDuration(duration);
+            }
+        });
+    }
+
+    public void animationDiceMove(PlayerFlag flag, int diceNum)  {
+        scheduleAnimation(new AnimationTask(50) {
+            @Override
+            public void execute() {
+                DiceImage last = diceImage;
+                diceImage = new DiceImage(GameProcessPage.instance, diceNum);
+                Location l = chessBoard.getSlots().getPrepareSlot(flag).getLocation();
+                AbsoluteLayout.LayoutParams layoutParams = new AbsoluteLayout.LayoutParams(chessSize,chessSize,getAxis(l.getX()),getAxis(l.getY()));
+                mABLayout.addView(diceImage,layoutParams);
+
+                if (last != null) {
+                    mABLayout.removeView(last);
+                }
+            }
+        });
+        scheduleAnimation(new AnimationTask(1200) {
+            @Override
+            public void execute() {
+                diceImage.animate().x(getAxis(17)).setDuration(1000);
+                diceImage.animate().y(getAxis(17)).setDuration(1000);
             }
         });
     }
@@ -162,12 +204,20 @@ public class GameProcessPage extends AppCompatActivity{
     }
 
 
-    public void setMtvPlayerList(String text){
-        mtvPlayerList.setText(text);
-    }
+
 
     public void scheduleAnimation(AnimationTask task) {
-        animationQueue.offer(task);
+        animationThread.schedule(new QueuedTask() {
+            @Override
+            public void execute() {
+                runOnUiThread(() -> task.execute());
+            }
+
+            @Override
+            public int getDelay() {
+                return task.getWaitTime();
+            }
+        });
     }
 
 
@@ -187,21 +237,91 @@ public class GameProcessPage extends AppCompatActivity{
                 AbsoluteLayout.LayoutParams layoutParams = new AbsoluteLayout.LayoutParams(chessSize,chessSize,getAxis(l.getX()),getAxis(l.getY()));
                 mABLayout.addView(chessButton,layoutParams);
             }
+
             chessButtons.put(player.getFlag(), flaggedBtns);
+
+            ImageView imageView=new ImageView(this);
+            TextView textView=new TextView(this);
+            textView.setText(player.getName());
+            textView.setGravity(Gravity.CENTER);
+            textView.setCompoundDrawablePadding(10);
+            int id=1;
+            imageView.setId(id);
+
+            GridLayout.Spec rowSpec = null;
+            GridLayout.Spec columnSpec = null;
+            GridLayout.LayoutParams layoutParams;
+
+            RelativeLayout relativeLayout = new RelativeLayout(this);
+            relativeLayout.setGravity(Gravity.CENTER);
+            RelativeLayout.LayoutParams reParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
+            if(player.getFlag()==PlayerFlag.BLUE){
+                rowSpec=GridLayout.spec(1, 1);
+                columnSpec=GridLayout.spec(0, 1);
+                imageView.setBackground(getDrawable(R.drawable.blue));
+            }else if(player.getFlag()==PlayerFlag.GREEN) {
+                rowSpec=GridLayout.spec(0, 1);
+                columnSpec=GridLayout.spec(0, 1);
+                imageView.setBackground(getDrawable(R.drawable.green));
+            }else if(player.getFlag()==PlayerFlag.RED){
+                rowSpec=GridLayout.spec(0, 1);
+                columnSpec=GridLayout.spec(1, 1);
+                imageView.setBackground(getDrawable(R.drawable.red));
+            }else if(player.getFlag()==PlayerFlag.YELLOW){
+                rowSpec=GridLayout.spec(1, 1);
+                columnSpec=GridLayout.spec(1, 1);
+                imageView.setBackground(getDrawable(R.drawable.yellow));
+            }
+
+
+            imageView.setLayoutParams(new RelativeLayout.LayoutParams(chessSize,chessSize));
+            relativeLayout.addView(imageView);
+
+            reParams.addRule(RelativeLayout.RIGHT_OF,imageView.getId());
+            reParams.setMargins(10,10,10,10);
+            textView.setLayoutParams(reParams);
+            relativeLayout.addView(textView);
+
+            layoutParams = new GridLayout.LayoutParams(rowSpec,columnSpec);
+            layoutParams.setMargins(100,50,50,50);
+            layoutParams.setGravity(Gravity.LEFT);
+
+            mGrPlayerList.addView(relativeLayout,layoutParams);
+            setMtvPlayerList.put(player,textView);
+
         }
-        setMtvPlayerList(sb.toString());
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            new AlertDialog.Builder(this)
+                    .setMessage("Are you sure to return the menu?")
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
+                        }
+                    }).setPositiveButton("Back", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent=new Intent(GameProcessPage.this,MenuPage.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }).show();
+            return  true;
+        }else{
+            return super.onKeyDown(keyCode, event);
+        }
+    }
 
 
     public Map<Integer, ChessButton> getChessButtons(PlayerFlag flag){
         return chessButtons.get(flag);
     }
-
-
-
-
 
 }

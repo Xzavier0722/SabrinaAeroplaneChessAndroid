@@ -38,7 +38,6 @@ public class RoomListAdapter extends BaseAdapter {
     }
 
     static class RoomViewHolder {
-        public ImageView imageView;
         public TextView tvOwnerID;
         public TextView tvRoomNum;
     }
@@ -50,7 +49,6 @@ public class RoomListAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mLayoutInflater.inflate(R.layout.layout_list_room, null);
             holder = new RoomViewHolder();
-            holder.imageView =(ImageView) convertView.findViewById(R.id.ivRoomOwner);
             holder.tvOwnerID=convertView.findViewById(R.id.tv_roomOwner);
             holder.tvRoomNum=convertView.findViewById(R.id.tv_roomNum);
             convertView.setTag(holder);

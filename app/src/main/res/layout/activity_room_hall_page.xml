@@ -5,7 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RoomHallPage">
+    tools:context=".RoomHallPage"
+    android:gravity="center"
+    android:layout_margin="10dp">
     <com.upowarz.aeroplanechess.IconButton
         android:id="@+id/btnBackMenu"
         android:layout_width="57dp"
@@ -38,10 +40,6 @@
         android:layout_margin="5dp"
         android:background="@drawable/selector_normal_button"></Button>
 
-    <ListView
-        android:id="@+id/list_Room"
-        android:layout_below="@+id/btn_CreateRoom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></ListView>
+
 
   </RelativeLayout>
