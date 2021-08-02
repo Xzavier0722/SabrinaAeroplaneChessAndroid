@@ -11,6 +11,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Packet;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Request;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.security.AES;
+
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import static com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils.base64;
+import static com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils.sha256;
+
 public class RegisterPage extends AppCompatActivity {
 
     private EditText mET_userName;
@@ -36,13 +51,46 @@ public class RegisterPage extends AppCompatActivity {
         mbBtn_createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(userName==null||userPassword==null||checkPassword==null){
+                if(getUserName()==null||getUserPassword()==null||getCheckPassword()==null){
                     Toast.makeText(getApplicationContext(),"Cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
-                }else if(userName.contains(" ")||userPassword.contains(" ")||checkPassword.contains(" ")){
+                }else if(getUserName().contains(" ")||getUserPassword().contains(" ")||getCheckPassword().contains(" ")){
                     Toast.makeText(getApplicationContext(),"Cannot contain space", Toast.LENGTH_SHORT).show();
                     return;
-                }else{
+
+                }else if(getCheckPassword()!=getUserPassword()){
+                    Toast.makeText(getApplicationContext(),"Password is not same", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else{
+
+                    AES aes=null;
+                    long timestamp = System.currentTimeMillis();
+                    String str = Utils.randomString(64);
+                    try {
+
+                        aes = new AES(Utils.sha256(timestamp+str));
+                        String data = Utils.base64(getUserName())+","+Utils.sha256(getUserPassword());
+
+                        Packet packet = new Packet();
+                        packet.setRequest(Request.REGISTER);
+                        packet.setSign(Utils.getSign(data));
+                        packet.setData(aes.encrypt(data));
+                        packet.setTimestamp(timestamp);
+                        packet.setSessionId(str);
+
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchPaddingException e) {
+                        e.printStackTrace();
+                    } catch (InvalidKeyException e) {
+                        e.printStackTrace();
+                    } catch (BadPaddingException e) {
+                        e.printStackTrace();
+                    } catch (IllegalBlockSizeException e) {
+                        e.printStackTrace();
+                    }
+
 
                 }
             }
@@ -50,17 +98,11 @@ public class RegisterPage extends AppCompatActivity {
     }
 
 
-    public String getUserName() {
-        return userName=mET_userName.getText().toString();
-    }
+    public String getUserName() { return userName=mET_userName.getText().toString(); }
 
-    public String getUserPassword() {
-        return userPassword=mET_userPassword.getText().toString();
-    }
+    public String getUserPassword() { return userPassword=mET_userPassword.getText().toString(); }
 
-    public String getCheckPassword() {
-        return checkPassword=mET_checkUserPassword.getText().toString();
-    }
+    public String getCheckPassword() { return checkPassword=mET_checkUserPassword.getText().toString(); }
 
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

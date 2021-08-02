@@ -17,6 +17,7 @@ public class LoginPage extends AppCompatActivity {
 
     private Button btnLogin;
     private Button btnBack;
+    private Button btnRegister;
     private EditText etAccount;
     private EditText etPassword;
 
@@ -30,7 +31,7 @@ public class LoginPage extends AppCompatActivity {
         btnBack = findViewById(R.id.btnLoginBack);
         etAccount = (EditText)findViewById(R.id.et_Account);
         etPassword = (EditText)findViewById(R.id.et_Password);
-
+        btnRegister=findViewById(R.id.btnStart);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +45,15 @@ public class LoginPage extends AppCompatActivity {
             public void onClick(View v) {
                 //Check user account and password from database
 
-                Intent intent=new Intent(LoginPage.this,MenuPage.class);
+                Intent intent=new Intent(LoginPage.this,MutilplayerPage.class);
+                startActivity(intent);
+            }
+        });
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(LoginPage.this,RegisterPage.class);
                 startActivity(intent);
             }
         });

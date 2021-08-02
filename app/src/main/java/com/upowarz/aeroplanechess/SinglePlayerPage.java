@@ -83,7 +83,7 @@ public class SinglePlayerPage extends AppCompatActivity {
             public void onClick(View v) {
                 mbtnSingle.setEnabled(false);
                 check();
-                GameLoopTask task = new GameLoopTask(new ChessBoard(playerSet));
+                GameLoopTask task = new GameLoopTask(new ChessBoard(playerSet),false);
                 mThreadPool.execute(task);
             }
         });

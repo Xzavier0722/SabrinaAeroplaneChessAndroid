@@ -32,7 +32,7 @@ public class MenuPage extends AppCompatActivity {
         btnJumpMutilply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MenuPage.this,RoomHallPage.class);
+                Intent intent = new Intent(MenuPage.this,LoginPage.class);
                 startActivity(intent);
             }
         });
