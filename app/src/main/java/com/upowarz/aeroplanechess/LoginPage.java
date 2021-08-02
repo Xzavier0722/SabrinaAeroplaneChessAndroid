@@ -47,16 +47,21 @@ public class LoginPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Check user account and password from database
-                PlayerProfile check;
+                ;
                 try {
-                    RemoteController remoteController= Sabrina.getRemoteController();
-                    check=remoteController.login(getUserAccount(),getUserPassword());
-                    if (check != null){
-                        Intent intent=new Intent(LoginPage.this,MutilplayerPage.class);
-                        startActivity(intent);
-                    }else{
-                        Toast.makeText(getApplicationContext(),"Login failed",Toast.LENGTH_SHORT);
-                    }
+                    new Thread(() -> {
+                        RemoteController remoteController= Sabrina.getRemoteController();
+                        PlayerProfile check = remoteController.login(getUserAccount(),getUserPassword());
+                        runOnUiThread(() -> {
+                            if (check != null){
+                                Intent intent=new Intent(LoginPage.this,MutilplayerPage.class);
+                                startActivity(intent);
+                            }else{
+                                Toast.makeText(getApplicationContext(),"Login failed",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }).start();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

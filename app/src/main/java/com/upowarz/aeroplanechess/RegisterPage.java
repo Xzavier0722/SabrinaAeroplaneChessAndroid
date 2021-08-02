@@ -13,20 +13,15 @@ import android.widget.Toast;
 
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.Sabrina;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.remote.RemoteController;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.remote.RequestLock;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Packet;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Request;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.security.AES;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils.base64;
-import static com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils.sha256;
 
 public class RegisterPage extends AppCompatActivity {
 
@@ -79,8 +74,14 @@ public class RegisterPage extends AppCompatActivity {
                         packet.setTimestamp(timestamp);
                         packet.setSessionId(str);
 
-                        //Thread t = new Thread();
-                        String response = Sabrina.getRemoteController().requestWithBlocking(RemoteController.loginService, packet).getValue();
+                        RequestLock lock = new RequestLock();
+                        new Thread(() -> {
+                            Sabrina.getRemoteController().requestWithBlocking(lock, RemoteController.loginService, packet);
+                        }).start();
+                        synchronized (lock) {
+                            lock.wait();
+                        }
+                        String response = lock.getValue();
                         if (!response.equals("ERROR")) {
                             // ERROR
                         } else {

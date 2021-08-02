@@ -125,7 +125,9 @@ public class RemoteController {
                         String data = aes.decrypt(p.getData());
                         lock.setValue(verifySign(p, data) ? data : "ERROR");
                 }
-                lock.notifyAll();
+                synchronized (lock) {
+                    lock.notifyAll();
+                }
             } catch (IllegalBlockSizeException | BadPaddingException e) {
                 e.printStackTrace();
             }
@@ -223,14 +225,20 @@ public class RemoteController {
 
     public RequestLock requestWithBlocking(InetPointInfo info, Packet p) {
         RequestLock lock = new RequestLock();
+        requestWithBlocking(lock, info, p);
+        return lock;
+    }
+
+    public void requestWithBlocking(RequestLock lock, InetPointInfo info, Packet p) {
         waitThreads.put(setSeq(p), lock);
         send(info, p, p.getTimestamp());
         try {
-            lock.wait();
+            synchronized (lock) {
+                lock.wait();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return lock;
     }
 
     public AES getAes() {

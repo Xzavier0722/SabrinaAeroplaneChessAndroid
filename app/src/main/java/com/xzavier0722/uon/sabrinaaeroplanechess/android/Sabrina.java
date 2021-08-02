@@ -36,7 +36,7 @@ public class Sabrina {
 
     public static InetAddress getServerHost() {
         try {
-            return InetAddress.getByName("127.0.0.1");
+            return InetAddress.getByName("192.168.0.106");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
