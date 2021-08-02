@@ -5,15 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
+
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -22,35 +20,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.Sabrina;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Player;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.PlayerFlag;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.ChessBoard;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Location;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Piece;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Slot;
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.SlotType;
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.Slots;
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.EventListener;
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.Listener;
-import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.player.PlayerTurnStartEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.process.GameStartEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.threading.QueuedExecutionThread;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.threading.QueuedTask;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class GameProcessPage extends AppCompatActivity{
 
     public AbsoluteLayout mABLayout;
-    private LinearLayout.LayoutParams mLParams;
     private LinearLayout linearLayout;
     private GridLayout mGrPlayerList;
 
@@ -65,11 +50,7 @@ public class GameProcessPage extends AppCompatActivity{
     public int chessSize;
     public boolean result;
 
-
-    private Slots slots;
-    //private BlockingQueue<AnimationTask> animationQueue = new LinkedBlockingDeque<>();
     private MediaPlayer soundPlayer;
-    private List<Player>playerList;
     private Map<PlayerFlag, Map<Integer, ChessButton>> chessButtons;
     private ChessBoard chessBoard;
 
@@ -79,14 +60,11 @@ public class GameProcessPage extends AppCompatActivity{
 
     public static GameProcessPage instance;
 
-    private int lastStep = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         instance = this;
         super.onCreate(savedInstanceState);
-        slots = new Slots();
         setContentView(R.layout.activity_game_process_page);
 
         //hide status Bar
@@ -98,9 +76,9 @@ public class GameProcessPage extends AppCompatActivity{
         init();
 
         //Set Ablayout and add into view
-        mLParams=new LinearLayout.LayoutParams(height,height);
+        LinearLayout.LayoutParams mLParams = new LinearLayout.LayoutParams(height, height);
         mABLayout.setBackground(getResources().getDrawable(R.drawable.game_map));
-        linearLayout.addView(mABLayout,0,mLParams);
+        linearLayout.addView(mABLayout,0, mLParams);
 
         //Call listener
         GameStartEvent gameStartEvent=CacheManager.get("eventInit",GameStartEvent.class,null);
@@ -111,18 +89,7 @@ public class GameProcessPage extends AppCompatActivity{
         //Call Thread
         animationThread = new QueuedExecutionThread();
         animationThread.start();
-//        ExecutorService mThreadPool = Executors.newCachedThreadPool();
-//        mThreadPool.execute(()->{
-//            while (true) {
-//                try{
-//                    AnimationTask task = animationQueue.take();
-//                    runOnUiThread(() -> task.execute());
-//                    Thread.sleep(task.getWaitTime());
-//                }catch (Throwable e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+
         synchronized (gameStartEvent) {
             gameStartEvent.notifyAll();
         }
@@ -137,7 +104,6 @@ public class GameProcessPage extends AppCompatActivity{
         mGrPlayerList = findViewById(R.id.GrPlayerList);
 
         chessButtons = new HashMap<>();
-        playerList = new ArrayList<>();
         setMtvPlayerList = new HashMap<>();
         soundPlayer = MediaPlayer.create(this,R.raw.go);
 

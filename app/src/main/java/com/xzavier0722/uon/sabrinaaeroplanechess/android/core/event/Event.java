@@ -1,7 +1,5 @@
 package com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event;
 
-import androidx.annotation.NonNull;
-
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.ChessBoard;
 
 import java.util.LinkedList;
@@ -14,13 +12,15 @@ public abstract class Event {
     private boolean requireUpdate;
     private final List<Event> subEvents;
 
-    public Event(@NonNull ChessBoard chessBoard) {
+    private boolean multiPlayer;
+
+    public Event(ChessBoard chessBoard) {
         this.chessBoard = chessBoard;
         requireUpdate = true;
+        multiPlayer = false;
         subEvents = new LinkedList<>();
     }
 
-    @NonNull
     public ChessBoard getChessBoard() {
         return chessBoard;
     }
@@ -39,5 +39,13 @@ public abstract class Event {
 
     public List<Event> getSubEvents() {
         return subEvents;
+    }
+
+    public boolean isMultiPlayer() {
+        return multiPlayer;
+    }
+
+    public void setMultiPlayer(boolean multiPlayer) {
+        this.multiPlayer = multiPlayer;
     }
 }

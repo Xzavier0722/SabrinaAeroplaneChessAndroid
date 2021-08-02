@@ -5,10 +5,14 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.ChessBoard;
 
 public abstract class PlayerDiceEvent extends PlayerEvent{
 
-    private final int diceNum;
+    private int diceNum;
 
     public PlayerDiceEvent(ChessBoard chessBoard, Player player, int diceNum) {
         super(chessBoard, player);
+        this.diceNum = diceNum;
+    }
+
+    public void setDiceNum(int diceNum) {
         this.diceNum = diceNum;
     }
 

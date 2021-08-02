@@ -29,9 +29,11 @@ public class GameLoopTask implements Runnable, Listener {
     private final ChessBoard chessBoard;
     private final Random random = new Random();
     private final List<Player> ranking = new ArrayList<>();
+    private final boolean multiPlayer;
 
-    public GameLoopTask(ChessBoard chessBoard) {
+    public GameLoopTask(ChessBoard chessBoard, boolean isMultiPlayer) {
         this.chessBoard = chessBoard;
+        this.multiPlayer = isMultiPlayer;
         Sabrina.getEventManager().registerListener(this);
     }
 
@@ -110,6 +112,9 @@ public class GameLoopTask implements Runnable, Listener {
     }
 
     private <T extends Event> T callEvent(T e) {
+        if (multiPlayer) {
+            e.setMultiPlayer(true);
+        }
         Sabrina.getEventManager().callListener(e);
         return e;
     }
