@@ -1,7 +1,15 @@
 package com.xzavier0722.uon.sabrinaaeroplanechess.android.remote;
 
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.Sabrina;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.remote.GameRoomDestroyEvent;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.remote.GameRoomJoinEvent;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.remote.GameRoomKickEvent;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.remote.GameRoomLeaveEvent;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.remote.RemoteGameStartEvent;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.remote.RemotePieceSelectedEvent;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.remote.RemoteTurnStartEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.game.PlayerProfile;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.HandlingDatagramPacket;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.InetPointInfo;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Packet;
@@ -12,6 +20,8 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.common.security.AES;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +46,7 @@ public class RemoteController {
 
     public RemoteController() throws SocketException {
         point = new SocketPoint(this::onReceived);
+        point.start();
     }
 
     private void onReceived(DatagramPacket packet) {
@@ -122,14 +133,52 @@ public class RemoteController {
         }
 
         // Other processes
-        switch (p.getRequest()) {
-            case GAME_ROOM:
+        try {
+            if (!verifySign(p)) {
+                return;
+            }
 
-            case GAME_PROCESS:
+            String[] requestStr = aes.decrypt(p.getData()).split(",");
+
+            switch (p.getRequest()) {
+                case GAME_ROOM:
+                    if (requestStr[0].equals("kick")) {
+                        if (requestStr.length == 1) {
+                            Sabrina.getEventManager().callListener(new GameRoomDestroyEvent());
+                        } else {
+                            Sabrina.getEventManager().callListener(new GameRoomKickEvent(requestStr[1]));
+                        }
+                        return;
+                    }
+                    PlayerProfile profile = Utils.getGson().fromJson(requestStr[1], PlayerProfile.class);
+                    switch (requestStr[0]) {
+                        case "remove":
+                            Sabrina.getEventManager().callListener(new GameRoomLeaveEvent(profile));
+                            return;
+                        case "add":
+                            Sabrina.getEventManager().callListener(new GameRoomJoinEvent(profile));
+                            return;
+                        case "start":
+                            Sabrina.getEventManager().callListener(new RemoteGameStartEvent(new ArrayList<>(Arrays.asList(requestStr).subList(1, requestStr.length))));
+                            return;
+                    }
+                    return;
+                case GAME_PROCESS:
+                    switch (requestStr[0]) {
+                        case "turnStart":
+                            Sabrina.getEventManager().callListener(new RemoteTurnStartEvent(Integer.parseInt(requestStr[1])));
+                            return;
+                        case "pieceSelected":
+                            Sabrina.getEventManager().callListener(new RemotePieceSelectedEvent(Integer.parseInt(requestStr[1])));
+                            return;
+                    }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public boolean login(String name, String password) {
+    public PlayerProfile login(String name, String password) {
         try {
             byte[] key = Utils.sha256(password);
             aes = new AES(key);
@@ -141,13 +190,14 @@ public class RemoteController {
 
             String response = requestWithBlocking(loginService,p).getValue();
             if (response != null && !response.equals("ERROR")) {
-                aes = new AES(response);
-                return true;
+                String[] responseArr = response.split(",");
+                aes = new AES(responseArr[0]);
+                return Utils.getGson().fromJson(responseArr[1], PlayerProfile.class);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     public void send(InetPointInfo info, Packet packet, long timestamp) {
