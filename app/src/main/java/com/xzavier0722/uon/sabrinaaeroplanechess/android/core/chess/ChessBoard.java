@@ -18,6 +18,7 @@ public class ChessBoard {
 
     private final Map<PlayerFlag, Player> players = new HashMap<>();
     private final Map<PlayerFlag, Set<Piece>> pieces = new HashMap<>();
+    private final Map<Integer, Piece> pieceIdCache = new HashMap<>();
     private final Slots slots = new Slots();
 
     public ChessBoard(Set<Player> players) {
@@ -46,6 +47,7 @@ public class ChessBoard {
                 piece.setHomeSlot(home);
                 setPieceToSlot(piece, home);
                 newPieces.add(piece);
+                pieceIdCache.put(piece.getId(), piece);
             }
             pieces.put(flag, newPieces);
         });
@@ -135,6 +137,10 @@ public class ChessBoard {
 
     public Set<Player> getPlayers() {
         return new HashSet<>(players.values());
+    }
+
+    public Piece getPieceById(int id) {
+        return pieceIdCache.get(id);
     }
 
 }

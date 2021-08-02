@@ -30,6 +30,7 @@ public class RemoteController {
 
     private final Map<Integer, RequestLock> waitThreads = new HashMap<>();
     private AES aes;
+    private String sessionId;
 
     private volatile int seq = 0;
 
@@ -101,31 +102,40 @@ public class RemoteController {
         RequestLock lock = waitThreads.remove(p.getId());
         if (lock != null) {
             try {
-                if (p.getRequest() == Request.ERROR ||p.getRequest() == Request.REGISTER) {
-                    lock.setValue(p.getData());
-                    lock.notifyAll();
-                    return;
-                }
-                String data = aes.decrypt(p.getData());
-                if (!verifySign(p, data)) {
-                    lock.setValue("ERROR");
-                } else {
-                    lock.setValue(data);
+
+                switch (p.getRequest()) {
+                    case ERROR:
+                    case REGISTER:
+                        lock.setValue(p.getData());
+                        break;
+                    case LOGIN:
+                        sessionId = p.getSessionId();
+                    default:
+                        String data = aes.decrypt(p.getData());
+                        lock.setValue(verifySign(p, data) ? data : "ERROR");
                 }
                 lock.notifyAll();
             } catch (IllegalBlockSizeException | BadPaddingException e) {
                 e.printStackTrace();
             }
+            return;
+        }
+
+        // Other processes
+        switch (p.getRequest()) {
+            case GAME_ROOM:
+
+            case GAME_PROCESS:
         }
     }
 
     public boolean login(String name, String password) {
         try {
             byte[] key = Utils.sha256(password);
-            AES aesLogin = new AES(key);
+            aes = new AES(key);
             Packet p = new Packet();
             p.setSessionId(Utils.base64(name));
-            p.setData(aesLogin.encrypt("Login"));
+            p.setData(aes.encrypt("Login"));
             p.setSign("NULL");
             p.setRequest(Request.LOGIN);
 
@@ -143,6 +153,10 @@ public class RemoteController {
     public void send(InetPointInfo info, Packet packet, long timestamp) {
         packet.setTimestamp(timestamp == -1 ? System.currentTimeMillis() : timestamp);
         HandlingDatagramPacket handlingPacket = HandlingDatagramPacket.getFor(packet);
+
+        if (packet.getSessionId() == null) {
+            packet.setSessionId(sessionId == null ? "NULL" : sessionId);
+        }
 
         for (int i = 0; i < handlingPacket.getSliceCount(); i++) {
             try {
@@ -167,6 +181,10 @@ public class RemoteController {
             e.printStackTrace();
         }
         return lock;
+    }
+
+    public AES getAes() {
+        return aes;
     }
 
     private synchronized int setSeq(Packet p) {

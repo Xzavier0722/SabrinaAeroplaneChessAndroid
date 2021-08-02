@@ -4,6 +4,7 @@ import com.upowarz.aeroplanechess.ListenerChessBoard;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.EventManager;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.listeners.ChessBoardMonitor;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.listeners.PieceListener;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.listeners.RemoteListener;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.listeners.RobotListener;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.remote.RemoteController;
 
@@ -26,6 +27,7 @@ public class Sabrina {
         new RobotListener();
         new ChessBoardMonitor();
         new ListenerChessBoard();
+        new RemoteListener();
     }
 
     public static EventManager getEventManager() {
