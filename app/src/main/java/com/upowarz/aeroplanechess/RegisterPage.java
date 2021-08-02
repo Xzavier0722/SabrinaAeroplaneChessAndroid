@@ -48,8 +48,8 @@ public class RegisterPage extends AppCompatActivity {
         mET_userName=findViewById(R.id.et_RgUserName);
         mET_userPassword=findViewById(R.id.et_RgUserPassword);
         mET_checkUserPassword=findViewById(R.id.et_checkPassword);
+        mbBtn_createAccount=findViewById(R.id.btnCreateAccount);
 
-        mbBtn_createAccount=findViewById(R.id.btn_SearchRoom);
         mbBtn_createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,11 +60,10 @@ public class RegisterPage extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Cannot contain space", Toast.LENGTH_SHORT).show();
                     return;
 
-                }else if(getCheckPassword()!=getUserPassword()){
+                }else if(!getCheckPassword().equals(getUserPassword())){
                     Toast.makeText(getApplicationContext(),"Password is not same", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                else{
+                } else {
 
                     long timestamp = System.currentTimeMillis();
                     String str = Utils.randomString(64);
@@ -80,6 +79,7 @@ public class RegisterPage extends AppCompatActivity {
                         packet.setTimestamp(timestamp);
                         packet.setSessionId(str);
 
+                        //Thread t = new Thread();
                         String response = Sabrina.getRemoteController().requestWithBlocking(RemoteController.loginService, packet).getValue();
                         if (!response.equals("ERROR")) {
                             // ERROR

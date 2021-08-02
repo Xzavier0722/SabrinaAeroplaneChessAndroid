@@ -10,7 +10,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.GameLoopTask;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Player;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.ChessBoard;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +61,12 @@ public class MutilplayerPage extends AppCompatActivity {
         }
 
 
+        btnMutilplayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GameLoopTask gameLoopTask=new GameLoopTask(new ChessBoard(players),true);
+            }
+        });
 
 
         mbtn_BackMutilplayer.setOnClickListener(new View.OnClickListener() {
