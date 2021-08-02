@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.Sabrina;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.remote.RemoteController;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Packet;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Request;
@@ -64,13 +66,12 @@ public class RegisterPage extends AppCompatActivity {
                 }
                 else{
 
-                    AES aes=null;
                     long timestamp = System.currentTimeMillis();
                     String str = Utils.randomString(64);
                     try {
 
-                        aes = new AES(Utils.sha256(timestamp+str));
-                        String data = Utils.base64(getUserName())+","+Utils.sha256(getUserPassword());
+                        AES aes = new AES(Utils.sha256(timestamp+str));
+                        String data = Utils.base64(getUserName())+","+Utils.base64(Utils.sha256(getUserPassword()));
 
                         Packet packet = new Packet();
                         packet.setRequest(Request.REGISTER);
@@ -79,15 +80,14 @@ public class RegisterPage extends AppCompatActivity {
                         packet.setTimestamp(timestamp);
                         packet.setSessionId(str);
 
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchPaddingException e) {
-                        e.printStackTrace();
-                    } catch (InvalidKeyException e) {
-                        e.printStackTrace();
-                    } catch (BadPaddingException e) {
-                        e.printStackTrace();
-                    } catch (IllegalBlockSizeException e) {
+                        String response = Sabrina.getRemoteController().requestWithBlocking(RemoteController.loginService, packet).getValue();
+                        if (!response.equals("ERROR")) {
+                            // ERROR
+                        } else {
+                            // SUCCESS, response is UUID
+                        }
+
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
