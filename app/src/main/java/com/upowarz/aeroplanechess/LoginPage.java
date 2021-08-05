@@ -54,7 +54,7 @@ public class LoginPage extends AppCompatActivity {
                         PlayerProfile check = remoteController.login(getUserAccount(),getUserPassword());
                         runOnUiThread(() -> {
                             if (check != null){
-                                Intent intent=new Intent(LoginPage.this,MutilplayerPage.class);
+                                Intent intent=new Intent(LoginPage.this,RoomHallPage.class);
                                 startActivity(intent);
                             }else{
                                 Toast.makeText(getApplicationContext(),"Login failed",Toast.LENGTH_SHORT).show();

@@ -152,7 +152,7 @@ public class RemoteController {
                         }
                         return;
                     }
-                    PlayerProfile profile = Utils.getGson().fromJson(requestStr[1], PlayerProfile.class);
+                    PlayerProfile profile = Utils.getGson().fromJson(new String(Utils.debase64(requestStr[1])), PlayerProfile.class);
                     switch (requestStr[0]) {
                         case "remove":
                             Sabrina.getEventManager().callListener(new GameRoomLeaveEvent(profile));
@@ -194,7 +194,7 @@ public class RemoteController {
             if (response != null && !response.equals("ERROR")) {
                 String[] responseArr = response.split(",");
                 aes = new AES(responseArr[0]);
-                return Utils.getGson().fromJson(responseArr[1], PlayerProfile.class);
+                return Utils.getGson().fromJson(new String(Utils.debase64(responseArr[1])), PlayerProfile.class);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,12 +204,13 @@ public class RemoteController {
 
     public void send(InetPointInfo info, Packet packet, long timestamp) {
         packet.setTimestamp(timestamp == -1 ? System.currentTimeMillis() : timestamp);
-        HandlingDatagramPacket handlingPacket = HandlingDatagramPacket.getFor(packet);
-
         if (packet.getSessionId() == null) {
             packet.setSessionId(sessionId == null ? "NULL" : sessionId);
         }
-
+        if (packet.getSequence() == -1) {
+            setSeq(packet);
+        }
+        HandlingDatagramPacket handlingPacket = HandlingDatagramPacket.getFor(packet);
         for (int i = 0; i < handlingPacket.getSliceCount(); i++) {
             try {
                 point.send(handlingPacket.getDatagramPacket(i, info).get());

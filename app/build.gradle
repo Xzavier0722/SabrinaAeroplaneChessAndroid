@@ -33,7 +33,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-    implementation 'com.github.Xzavier0722:SabrinaCommonLib:09f31873c4ba83b417692201f238e659c0b20350'
+    implementation 'com.github.Xzavier0722:SabrinaCommonLib:5f70445a6de9b2a543a51783c21f23052dda6a81'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

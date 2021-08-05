@@ -36,6 +36,7 @@
             android:gravity="center"
             android:layout_margin="10dp">
             <RadioButton
+                android:id="@+id/RdPnum1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2"
@@ -43,6 +44,7 @@
                 android:layout_margin="10dp"
                 android:checked="true"></RadioButton>
             <RadioButton
+                android:id="@+id/RdPnum2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3"
@@ -50,6 +52,7 @@
                 android:layout_margin="10dp"
                 ></RadioButton>
             <RadioButton
+                android:id="@+id/RdPnum3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="4"
@@ -91,6 +94,7 @@
                 android:textSize="25sp"></RadioButton>
         </RadioGroup>
         <Button
+            android:id="@+id/btn_CreateRoom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rBtnGRange"

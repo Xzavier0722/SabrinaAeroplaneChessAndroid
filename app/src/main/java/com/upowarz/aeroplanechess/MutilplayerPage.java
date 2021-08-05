@@ -5,18 +5,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.GameLoopTask;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.Player;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.chess.ChessBoard;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class MutilplayerPage extends AppCompatActivity {
 
@@ -24,6 +27,11 @@ public class MutilplayerPage extends AppCompatActivity {
     private Spinner spColorChoice;
     private Button mbtn_BackMutilplayer;
     private Button btnMutilplayer;
+    private TextView tvRoom;
+    public Map<UUID, String> uidPlayer;
+    public PlayerAdapter adapter;
+
+    public static MutilplayerPage instance;
 
     private Boolean RoomOwner;
 
@@ -37,11 +45,17 @@ public class MutilplayerPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mutilplayer_page);
 
+        instance = this;
+
+        tvRoom = findViewById(R.id.tv_RoomID);
         mListPlayers = findViewById(R.id.listPlayer);
         mbtn_BackMutilplayer = findViewById(R.id.btnMultiBack);
         btnMutilplayer = findViewById(R.id.btnStartPlay);
+        Intent intent = getIntent();
+        tvRoom.setText(intent.getStringExtra("RoomNum"));
+        RoomOwner = true;
+        uidPlayer = new HashMap<java.util.UUID, String>();
 
-        RoomOwner=true;
 
         if(RoomOwner){
             btnMutilplayer.setVisibility(View.VISIBLE);
@@ -52,13 +66,13 @@ public class MutilplayerPage extends AppCompatActivity {
 
         List<String> testID = Arrays.asList("a", "b", "c");
 
-        PlayerAdapter adapter = new PlayerAdapter(MutilplayerPage.this,testID);
+        adapter = new PlayerAdapter(MutilplayerPage.this,testID);
         mListPlayers.setAdapter(adapter);
 
-        for(int i = 0;i < players.size();i++){
-            spColorChoice=mListPlayers.getChildAt(i).findViewById(R.id.spColor);
-            spColorChoice.getSelectedItem().toString();
-        }
+//        for(int i = 0;i < players.size();i++){
+//            spColorChoice=mListPlayers.getChildAt(i).findViewById(R.id.spColor);
+//            spColorChoice.getSelectedItem().toString();
+//        }
 
 
         btnMutilplayer.setOnClickListener(new View.OnClickListener() {

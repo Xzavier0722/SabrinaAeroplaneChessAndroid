@@ -5,14 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.Sabrina;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.remote.RemoteController;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.remote.RequestLock;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Packet;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Request;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.security.AES;
 
 
 public class RoomHallPage extends AppCompatActivity {
@@ -52,8 +55,42 @@ public class RoomHallPage extends AppCompatActivity {
         mbtn_CreateRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(RoomHallPage.this,CreateRoomPage.class);
-                startActivity(intent);
+
+                AES aes = Sabrina.getRemoteController().getAes();
+                try {
+                    Packet packet = new Packet();
+                    packet.setRequest(Request.GAME_ROOM);
+                    String data = "create";
+                    packet.setSign(Utils.getSign(data));
+                    packet.setData(aes.encrypt(data));
+
+                    RequestLock lock = new RequestLock();
+
+                    new Thread(()->{
+                        Sabrina.getRemoteController().requestWithBlocking(lock,RemoteController.gameService,packet);
+                    }).start();
+                    synchronized (lock){
+                        lock.wait();
+                    }
+
+                    String message = lock.getValue();
+                    if(message=="ERROR"){
+                        Toast.makeText(getApplicationContext(),"ERROR",Toast.LENGTH_SHORT);
+                        return;
+                    }
+
+                    runOnUiThread(()->{
+                        Intent intent=new Intent(RoomHallPage.this,MutilplayerPage.class);
+                        System.out.println(message);
+                        intent.putExtra("RoomNum",message);
+                        startActivity(intent);
+                    });
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 

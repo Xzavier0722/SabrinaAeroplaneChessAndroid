@@ -25,8 +25,9 @@ public class  PlayerAdapter extends BaseAdapter {
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public void addPlayer(){
-
+    public void addPlayer(String name){
+        numplayer.add(name);
+        notifyDataSetChanged();
     }
 
 

@@ -14,6 +14,7 @@ public class CreateRoomPage extends AppCompatActivity{
     private RadioGroup mrdGMember;
     private RadioGroup mrdGRange;
     private Button btnbackCreateRoom;
+    private Button btnCreateRoom;
 
     private int numPlayers;
     private String range;
@@ -24,31 +25,29 @@ public class CreateRoomPage extends AppCompatActivity{
         setContentView(R.layout.activity_create_room_page);
 
         btnbackCreateRoom = findViewById(R.id.btnCreateBack);
-        btnbackCreateRoom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        btnbackCreateRoom.setOnClickListener(v -> finish());
 
         mrdGMember = findViewById(R.id.rdSelectNum);
-        mrdGMember.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton rd = group.findViewById(checkedId);
-                String str = rd.getText().toString();
-                numPlayers = Integer.getInteger(str);
-            }
+        mrdGMember.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton rd = group.findViewById(checkedId);
+            String str = rd.getText().toString();
+            numPlayers = Integer.valueOf(str);
         });
 
         mrdGRange=findViewById(R.id.rBtnGRange);
-        mrdGRange.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton rd = group.findViewById(checkedId);
-                range = rd.getText().toString();
-            }
+        mrdGRange.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton rd = group.findViewById(checkedId);
+            range = rd.getText().toString();
         });
+
+
+        btnCreateRoom = findViewById(R.id.btn_CreateRoom);
+        btnCreateRoom.setOnClickListener(v->{
+
+
+
+        });
+
 
 
     }

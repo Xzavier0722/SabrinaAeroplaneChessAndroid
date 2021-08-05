@@ -1,9 +1,11 @@
 package com.upowarz.aeroplanechess;
 
+import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -82,10 +84,14 @@ public class RegisterPage extends AppCompatActivity {
                             lock.wait();
                         }
                         String response = lock.getValue();
+                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
                         if (!response.equals("ERROR")) {
-                            // ERROR
+                            runOnUiThread(()->{
+                                Intent intent = new Intent(RegisterPage.this,LoginPage.class);
+                                startActivity(intent);
+                            });
                         } else {
-                            // SUCCESS, response is UUID
+
                         }
 
                     } catch (Exception e) {
