@@ -15,11 +15,13 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Packet;
 import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Request;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+
 public class RemoteListener implements Listener {
 
     private final RemoteController rc = Sabrina.getRemoteController();
-    private volatile int lastDice = 0;
-    private volatile int lastPieceId = 0;
+    BlockingQueue<Integer> responseQueue = new LinkedBlockingDeque<>();
 
     public RemoteListener() {
         Sabrina.getEventManager().registerListener(this);
@@ -27,6 +29,7 @@ public class RemoteListener implements Listener {
 
     @EventListener
     public void onTurnStart(PlayerTurnStartEvent e) {
+        System.out.println("PlayerTurnStartEvent");
         if (!e.isMultiPlayer()) {
             return;
         }
@@ -36,33 +39,32 @@ public class RemoteListener implements Listener {
         }
 
         try {
-            wait();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            e.setDiceNum(responseQueue.take());
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
         }
-
-        e.setDiceNum(lastDice);
     }
 
     @EventListener
     public void onPieceSelect(PlayerSelectPieceEvent e) {
+        System.out.println("PlayerSelectPieceEvent");
         if (!e.isMultiPlayer()) {
             return;
         }
 
         if (e.getPlayer().getType() == PlayerType.REMOTE) {
             try {
-                wait();
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                e.setSelectedPiece(e.getChessBoard().getPieceById(responseQueue.take()));
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
             }
         }
 
-        e.setSelectedPiece(e.getChessBoard().getPieceById(lastPieceId));
     }
 
     @EventListener(type = ListenerType.Post)
     public void postPieceSelect(PlayerSelectPieceEvent e) {
+        System.out.println("PlayerSelectPieceEvent");
         if (!e.isMultiPlayer()) {
             return;
         }
@@ -79,14 +81,14 @@ public class RemoteListener implements Listener {
 
     @EventListener
     public void onRemoteTurnStart(RemoteTurnStartEvent e) {
-        this.lastDice = e.getDice();
-        notifyAll();
+        System.out.println("RemoteTurnStartEvent");
+        responseQueue.offer(e.getDice());
     }
 
     @EventListener
-    public void onRemoteTurnStart(RemotePieceSelectedEvent e) {
-        this.lastPieceId = e.getPieceId();
-        notifyAll();
+    public void onRemotePieceSelected(RemotePieceSelectedEvent e) {
+        System.out.println("RemotePieceSelectedEvent");
+        responseQueue.offer(e.getPieceId());
     }
 
     private void sendPacket(String data) {

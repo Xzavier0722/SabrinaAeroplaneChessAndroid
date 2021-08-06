@@ -1,6 +1,6 @@
 package com.xzavier0722.uon.sabrinaaeroplanechess.android;
 
-import com.upowarz.aeroplanechess.GameRoomListener;
+import com.upowarz.aeroplanechess.ListenerGameRoom;
 import com.upowarz.aeroplanechess.ListenerChessBoard;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.core.event.EventManager;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.listeners.ChessBoardMonitor;
@@ -29,7 +29,7 @@ public class Sabrina {
         new ChessBoardMonitor();
         new ListenerChessBoard();
         new RemoteListener();
-        new GameRoomListener();
+        new ListenerGameRoom();
     }
 
     public static EventManager getEventManager() {

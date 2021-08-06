@@ -59,7 +59,9 @@ public class GameLoopTask implements Runnable, Listener {
 
                 dice = 1 + random.nextInt(6);
                 // Call turn start event
-                callEvent(new PlayerTurnStartEvent(chessBoard, p, dice));
+                PlayerTurnStartEvent turnStartEvent = callEvent(new PlayerTurnStartEvent(chessBoard, p, dice));
+
+                dice = turnStartEvent.getDiceNum();
 
                 // 3 times of 6, drop all processing chess back to the home
                 if (count > 2 && dice == 6) {

@@ -41,11 +41,8 @@ import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.player.PlayerWin
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.process.GameEndEvent;
 import com.xzavier0722.uon.sabrinaaeroplanechess.android.events.process.GameStartEvent;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,10 +62,19 @@ public class ListenerChessBoard implements Listener {
         CacheManager.put("eventInit", e);
 
 
-        SinglePlayerPage.instance.runOnUiThread( () -> {
-            Intent jump=new Intent(SinglePlayerPage.instance,GameProcessPage.class);
-            SinglePlayerPage.instance.startActivity(jump);
-        });
+        if (e.isMultiPlayer()) {
+            // Multi
+            MutilplayerPage.instance.runOnUiThread( () -> {
+                Intent jump=new Intent(MutilplayerPage.instance,GameProcessPage.class);
+                MutilplayerPage.instance.startActivity(jump);
+            });
+        } else {
+            // Single
+            SinglePlayerPage.instance.runOnUiThread( () -> {
+                Intent jump=new Intent(SinglePlayerPage.instance,GameProcessPage.class);
+                SinglePlayerPage.instance.startActivity(jump);
+            });
+        }
 
 
         try {

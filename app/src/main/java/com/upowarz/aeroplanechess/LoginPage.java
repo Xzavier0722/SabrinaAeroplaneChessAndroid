@@ -54,6 +54,7 @@ public class LoginPage extends AppCompatActivity {
                         PlayerProfile check = remoteController.login(getUserAccount(),getUserPassword());
                         runOnUiThread(() -> {
                             if (check != null){
+                                CacheManager.put("currentPlayer",check);
                                 Intent intent=new Intent(LoginPage.this,RoomHallPage.class);
                                 startActivity(intent);
                             }else{

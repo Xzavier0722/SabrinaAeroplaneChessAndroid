@@ -7,26 +7,45 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.Sabrina;
+import com.xzavier0722.uon.sabrinaaeroplanechess.android.remote.RemoteController;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.Utils;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.game.PlayerProfile;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Packet;
+import com.xzavier0722.uon.sabrinaaeroplanechess.common.networking.Request;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class  PlayerAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<String> numplayer;
+    private List<PlayerProfile> numplayer;
     private LayoutInflater mLayoutInflater;
+    private boolean right;
 
-    public PlayerAdapter(Context context,List<String>objects) {
+    public PlayerAdapter(Context context, List<PlayerProfile> objects, boolean roomOwner) {
         this.mContext = context;
         this.numplayer=objects;
+        this.right=roomOwner;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public void addPlayer(String name){
-        numplayer.add(name);
+    public void addPlayer(PlayerProfile playerProfile){
+        numplayer.add(playerProfile);
+        notifyDataSetChanged();
+    }
+
+    public void deletePlayer(String uuid){
+        for (PlayerProfile playerProfile:numplayer){
+            if (playerProfile.getUuid().toString().equals(uuid)){
+                numplayer.remove(playerProfile);
+                break;
+            }
+        }
         notifyDataSetChanged();
     }
 
@@ -66,7 +85,8 @@ public class  PlayerAdapter extends BaseAdapter {
            holder=(PlayerViewHolder)convertView.getTag();
         }
 
-        String name = numplayer.get(position);
+
+        String name = numplayer.get(position).getName();
         holder.tvUserID.setText(name);
 
         String[]numColor = new String[]{"Red","Yellow","Blue","Green"};
@@ -75,12 +95,34 @@ public class  PlayerAdapter extends BaseAdapter {
         holder.spColorChoice.setAdapter(colorAdapter);
 
 
-        holder.mBtnKick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                numplayer.remove(position);
-                notifyDataSetChanged();
+        if(right && position != 0){
+            holder.mBtnKick.setVisibility(View.VISIBLE);
+        }else{
+            holder.mBtnKick.setVisibility(View.INVISIBLE);
+        }
+
+        if(right){
+            holder.spColorChoice.setVisibility(View.VISIBLE);
+        }else{
+            holder.spColorChoice.setVisibility(View.INVISIBLE);
+        }
+
+        holder.mBtnKick.setOnClickListener(v -> {
+            try {
+                String data = "kick,"+numplayer.get(position).getUuid();
+                RemoteController rc = Sabrina.getRemoteController();
+                Packet packet = new Packet();
+                packet.setRequest(Request.GAME_ROOM);
+                packet.setData(rc.getAes().encrypt(data));
+                packet.setSign(Utils.getSign(data));
+                new Thread(()-> rc.send(RemoteController.gameService, packet, -1)).start();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+            numplayer.remove(position);
+            notifyDataSetChanged();
+
         });
 
         return convertView;

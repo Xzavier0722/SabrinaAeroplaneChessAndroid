@@ -113,6 +113,7 @@ public class GameProcessPage extends AppCompatActivity{
         height = metrics.heightPixels;
         mapGap = height/36;
         chessSize = getAxis(2);
+        mbtnRoll.setEnabled(false);
 
         //Create Click event
         mbtnRoll.setOnClickListener(v -> {

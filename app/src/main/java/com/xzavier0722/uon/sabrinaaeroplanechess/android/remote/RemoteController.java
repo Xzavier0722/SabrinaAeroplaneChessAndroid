@@ -152,6 +152,10 @@ public class RemoteController {
                         }
                         return;
                     }
+                    if (requestStr[0].equals("start")) {
+                        Sabrina.getEventManager().callListener(new RemoteGameStartEvent(new ArrayList<>(Arrays.asList(requestStr).subList(1, requestStr.length))));
+                        return;
+                    }
                     PlayerProfile profile = Utils.getGson().fromJson(new String(Utils.debase64(requestStr[1])), PlayerProfile.class);
                     switch (requestStr[0]) {
                         case "remove":
@@ -160,9 +164,6 @@ public class RemoteController {
                         case "add":
                             Sabrina.getEventManager().callListener(new GameRoomJoinEvent(profile));
                             return;
-                        case "start":
-                            Sabrina.getEventManager().callListener(new RemoteGameStartEvent(new ArrayList<>(Arrays.asList(requestStr).subList(1, requestStr.length))));
-                            return;
                     }
                     return;
                 case GAME_PROCESS:
@@ -170,7 +171,7 @@ public class RemoteController {
                         case "turnStart":
                             Sabrina.getEventManager().callListener(new RemoteTurnStartEvent(Integer.parseInt(requestStr[1])));
                             return;
-                        case "pieceSelected":
+                        case "selectedPiece":
                             Sabrina.getEventManager().callListener(new RemotePieceSelectedEvent(Integer.parseInt(requestStr[1])));
                             return;
                     }
